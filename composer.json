@@ -1,0 +1,29 @@
+{
+  "name": "freeman/jals",
+  "description": "Just Another Login System",
+  "keywords": ["login"],
+  "homepage": "https://github.com/CodyFreeman",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Cody Freeman",
+      "email": "codycodescode@gmail.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "monolog/monolog": "^1.22",
+    "symfony/http-foundation": "^3.3.2",
+    "php-di/php-di": "^5.4",
+    "nikic/fast-route": "^1.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "freeman\\jals\\": "src/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.1"
+  }
+}
