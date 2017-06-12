@@ -38,15 +38,10 @@ class RegisterUserController {
 
     /**
      * Registers a new user
-     * @param string $email
-     * @param string $password
-     * @return mixed
      */
-    public function registerUser(string $email, string $password) {
-        if (!$this->validateInput($email, $password)) {
-            return false;
-        }
-        return true;
+    public function registerUser(): ResponseInterface {
+        
+        return $this->response;
     }
 
     protected function validateInput(string $email, string $password): bool {

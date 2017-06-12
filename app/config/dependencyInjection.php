@@ -20,11 +20,14 @@ return [
 
     \Psr\Http\Message\ServerRequestInterface::class => \DI\get(ServerRequest::class),
 
+    ServerRequest::class => function () {
+    return \Zend\Diactoros\ServerRequestFactory::fromGlobals($_SERVER, $_GET, $_POST, $_COOKIE, $_FILES);
+    },
+
     \Psr\Http\Message\ResponseInterface::class => \DI\get(\Zend\Diactoros\Response::class),
 
-    PasswordRules::class =>
-        function (\DI\Container $container) {
-            $rules = json_decode(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR .'passwordRules.json'));
+    PasswordRules::class => function () {
+            $rules = json_decode(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'passwordRules.json'));
             return new PasswordRules(
                 $rules->passwordRequirements->minSymbols,
                 $rules->passwordRequirements->minNumbers,
