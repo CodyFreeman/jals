@@ -32,8 +32,8 @@ switch ($routeInfo[0]){
         $response = $container->call($routeInfo[1]);
         $emitter = new \Zend\Diactoros\Response\SapiEmitter();
         $emitter->emit($response);
+        echo 'eob';
         break;
     default:
         //TODO: figure out if reachable, and handle potential error
 }
-
