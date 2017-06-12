@@ -30,9 +30,12 @@ switch ($routeInfo[0]){
         //NTS: 405 errors require responding with allowed methods which is stored $routeInfo[1]
         break;
     case \FastRoute\Dispatcher::FOUND:
+        $controllerName = $routeInfo[1][0];
         $method = $routeInfo[1][1];
         $parameters = $routeInfo[2];
-        $container->get($routeInfo[1])->$routeInfo[1][1];
-
+        //$controller = $container->get($controllerName);
+        //var_dump($controller); //TODO: REMOVE
+        var_dump($routeInfo[1]);
+        $container->call($routeInfo[1]);
         break;
 }

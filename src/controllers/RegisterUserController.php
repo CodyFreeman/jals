@@ -43,7 +43,6 @@ class RegisterUserController {
      * @return mixed
      */
     public function registerUser(string $email, string $password) {
-        echo 'reached';
         if (!$this->validateInput($email, $password)) {
             return false;
         }
