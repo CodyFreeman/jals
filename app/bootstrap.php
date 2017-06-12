@@ -18,6 +18,7 @@ $container = $containerBuilder->build();
 // REQUIRING AND SETTING UP ROUTER
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'routes.php';
 $routeInfo = $dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());
+var_dump($routeInfo); //TODO: REMOVE
 
 // ROUTING TO DISPATCHER
 switch ($routeInfo[0]){
@@ -29,9 +30,9 @@ switch ($routeInfo[0]){
         //NTS: 405 errors require responding with allowed methods which is stored $routeInfo[1]
         break;
     case \FastRoute\Dispatcher::FOUND:
-        $controller = $routeInfo[1];
+        $method = $routeInfo[1][1];
         $parameters = $routeInfo[2];
-        $test = $container->get($controller);
-        var_dump($test); //TODO REMOVE
+        $container->get($routeInfo[1])->$routeInfo[1][1];
+
         break;
 }

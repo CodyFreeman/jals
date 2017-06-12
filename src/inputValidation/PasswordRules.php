@@ -160,10 +160,10 @@ class PasswordRules implements PasswordRulesInterface {
      *
      * @return string
      */
+
     public function getValidPassSymbols(): string {
         return $this->validPassSymbols;
     }
-
     /**
      * Returns a string of valid numbers for passwords
      *
