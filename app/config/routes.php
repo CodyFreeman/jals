@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use freeman\jals\controllers\RegisterUserController;
+use freeman\jals\controllers\CreateUserController;
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $routeCollector){
-    $routeCollector->addRoute('GET', '/users/register', [RegisterUserController::class, 'registerUser']);
+    $routeCollector->addRoute('POST', '/users/register', [CreateUserController::class, 'createUser']);
 });

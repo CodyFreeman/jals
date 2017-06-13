@@ -6,11 +6,11 @@ namespace freeman\jals\controllers;
 
 use freeman\jals\interfaces\EmailValidatorInterface;
 use freeman\jals\interfaces\PasswordValidatorInterface;
-use freeman\jals\interfaces\RegisterUserRepoInterface;
+use freeman\jals\interfaces\UserRepoInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class RegisterUserController {
+class CreateUserController {
     /** @var ServerRequestInterface $request */
     protected $request;
 
@@ -23,8 +23,8 @@ class RegisterUserController {
     /** @var PasswordValidatorInterface $passwordValidator */
     protected $passwordValidator;
 
-    /** @var RegisterUserRepoInterface $registerUserRepo */
-    protected $registerUserRepo;
+    /** @var UserRepoInterface $userRepo */
+    protected $userRepo;
 
 
     public function __construct(
@@ -32,19 +32,36 @@ class RegisterUserController {
         ResponseInterface $response,
         EmailValidatorInterface $emailValidator,
         PasswordValidatorInterface $passwordValidator,
-        RegisterUserRepoInterface $registerUserRepo
+        UserRepoInterface $userRepo
     ) {
         $this->request = $request;
-        $this->response = $response;
+        $this->response = $response->withHeader('Content-Type', 'application/json');
         $this->emailValidator = $emailValidator;
         $this->passwordValidator = $passwordValidator;
-        $this->registerUserRepo = $registerUserRepo;
+        $this->userRepo = $userRepo;
     }
 
     /**
      * Registers a new user
      */
-    public function registerUser(): ResponseInterface {
+    public function createUser(): ResponseInterface {
+
+        if (!isset($this->request->getQueryParams()['email'], $this->request->getQueryParams()['password'])) {
+            return $this->response->withStatus(400); //TODO: reason phrase?
+        }
+
+        $email = $this->request->getQueryParams()['email'];
+        $password = $this->request->getQueryParams()['password'];
+
+        if (!$this->validateInput($email, $password)) {
+            return $this->response->withStatus(400); //TODO: reason phrase?
+        }
+
+        if (!$this->userRepo->createUser($email, $password)) {
+            return $this->response->withStatus(400); //TODO: reason phrase?
+        }
+
+        $this->response = $this->response->withStatus(201);
 
         return $this->response;
     }

@@ -29,7 +29,7 @@ switch ($routeInfo[0]){
         break;
     case \FastRoute\Dispatcher::FOUND:
         $parameters = $routeInfo[2];
-        $response = $container->call($routeInfo[1]);
+        $response = $container->call($routeInfo[1], $routeInfo[2]);
         $emitter = new \Zend\Diactoros\Response\SapiEmitter();
         $emitter->emit($response);
         break;

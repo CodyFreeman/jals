@@ -4,14 +4,13 @@ declare(strict_types=1);
 use freeman\jals\interfaces\EmailValidatorInterface;
 use freeman\jals\interfaces\PasswordRulesInterface;
 use freeman\jals\interfaces\PasswordValidatorInterface;
-use freeman\jals\interfaces\RegisterUserRepoInterface;
-use freeman\jals\repositories\RegisterUserRepo;
-
+use freeman\jals\interfaces\UserRepoInterface;
+use freeman\jals\repositories\UserRepo;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
-use freeman\jals\controllers\RegisterUserController;
+use freeman\jals\controllers\CreateUserController;
 use freeman\jals\inputValidation\EmailValidator;
 use freeman\jals\inputValidation\PasswordRules;
 use freeman\jals\inputValidation\PasswordValidator;
@@ -27,7 +26,7 @@ return [
 
     PasswordValidatorInterface::class => \DI\get(PasswordValidator::class),
 
-    RegisterUserRepoInterface::class => \DI\get(RegisterUserRepo::class),
+    UserRepoInterface::class => \DI\get(UserRepo::class),
 
     ServerRequestInterface::class => \DI\get(ServerRequest::class),
 
@@ -36,7 +35,6 @@ return [
     /* DEFINITIONS */
     PDO::class => function() {
         $dbConfig = json_decode(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'databaseConfig.json'));
-        var_dump($dbConfig);
         return new PDO($dbConfig->dsn, $dbConfig->user, $dbConfig->password, $dbConfig->driverOptions);
     },
 
@@ -60,6 +58,6 @@ return [
         );
     },
 
-    RegisterUserController::class => DI\object(RegisterUserController::class)
+    CreateUserController::class => DI\object(CreateUserController::class)
 
 ];
