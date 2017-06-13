@@ -33,7 +33,7 @@ class PasswordValidator implements PasswordValidatorInterface {
      * @return bool True if password is at or between min and max requirements
      */
     protected function validateLengthRules(string $password):bool {
-       return strlen($password) >= $this->rules->getReqPassMinLength() || strlen($password) <= $this->rules->getReqPassMaxLength();
+       return strlen($password) >= $this->rules->getReqPassMinLength() && strlen($password) <= $this->rules->getReqPassMaxLength();
     }
 
     /**
@@ -59,7 +59,7 @@ class PasswordValidator implements PasswordValidatorInterface {
      * @return bool True if $password conforms to rules, false otherwise
      */
     protected function validateCharacterRule(string $password, int $requirementCount, string $allowedCharacters):bool {
-        return $requirementCount === 0 || (int) preg_match_all('/[' . preg_quote($allowedCharacters) . ']/g', $password) >= $requirementCount;
+        return $requirementCount === 0 || (int) preg_match_all('/[' . preg_quote($allowedCharacters) . ']/', $password) >= $requirementCount;
     }
 
 }
