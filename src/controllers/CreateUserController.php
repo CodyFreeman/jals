@@ -56,8 +56,10 @@ class CreateUserController {
         if (!$this->emailValidator->validateEmailFormat($email) && $this->passwordValidator->validatePassword($password)) {
             return $this->response->withStatus(400); //TODO: reason phrase?
         }
-
-        //TODO: Check if user exists
+        
+        if ($this->userRepo->userExists($email)){
+            return $this->response->withStatus(400); //TODO: reason phrase?
+        }
 
         $password = password_hash($password, PASSWORD_DEFAULT);
 

@@ -6,6 +6,8 @@ namespace freeman\jals\interfaces;
 
 interface UserRepoInterface {
 
+    public function userExists(string $email);
+
     public function logIn(string $email, string $password);
 
     public function logOut(string $email);

@@ -38,6 +38,13 @@ class UserRepo implements UserRepoInterface {
 
     }
 
+    public function userExists(string $email): bool {
+        $sql = 'SELECT * FROM users WHERE email = :email';
+        $statement = $this->pdo->prepare($sql);
+        $statement->bindValue('email', $email, PDO::PARAM_STR);
+        return $this->pdo->execute() ? true : false;
+    }
+
     public function changeEmail(string $email, string $newEmail) {
 
     }
