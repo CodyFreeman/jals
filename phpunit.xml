@@ -1,0 +1,27 @@
+<phpunit
+        bootstrap="vendor/autoload.php"
+        colors="true">
+
+    <testsuites>
+
+        <testsuite name="all">
+            <directory suffix=".php">./tests/</directory>
+        </testsuite>
+
+        <testsuite name="inputValidation">
+            <directory>./tests/inputValidation/</directory>
+        </testsuite>
+
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
+    <logging>
+        <log
+                type="coverage-text"
+                target="php://stdout"
+        />
+    </logging>
+</phpunit>

@@ -19,6 +19,7 @@ class EmailValidator implements EmailValidatorInterface {
         if ($email !== $sanitizedEmail || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return false;
         }
+
         return true;
     }
 }

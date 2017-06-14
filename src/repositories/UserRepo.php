@@ -52,11 +52,31 @@ class UserRepo implements UserRepoInterface {
         return $statement->fetch() ? true : false;
     }
 
-    public function changeEmail(string $email, string $newEmail) {
-
+    public function changeEmail(string $email, string $newEmail): bool {
+        $sql = 'UPDATE users SET email=:newEmail WHERE email=:email';
+        $statement = $this->pdo->prepare($sql);
+        $statement->bindValue('email', $email, PDO::PARAM_STR);
+        $statement->bindValue('newEmail', $newEmail, PDO::PARAM_STR);
+        return $statement->execute();
     }
 
-    public function changePassword(string $email, string $newPassword) {
+    public function changePassword(string $email, string $newPassword): bool {
+        $sql = 'UPDATE users SET password=:newPassword WHERE email=:email';
+        $statement = $this->pdo->prepare($sql);
+        $statement->bindValue('email', $email, PDO::PARAM_STR);
+        $statement->bindValue('newEmail', $newPassword, PDO::PARAM_STR);
+        return $statement->execute();
+    }
 
+    public function getPasswordHash(string $email):string {
+        if(!$this->userExists($email)){
+            return '';
+        }
+        $sql = 'SELECT password FROM users WHERE email=:email';
+        $statement = $this->pdo->prepare($sql);
+        $statement->bindValue('email', $email);
+        $statement->execute();
+        $hash = $statement->fetch();
+        return $hash ? $hash : '';
     }
 }
