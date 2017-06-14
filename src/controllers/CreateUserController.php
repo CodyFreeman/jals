@@ -53,22 +53,18 @@ class CreateUserController {
         $email = $this->request->getQueryParams()['email'];
         $password = $this->request->getQueryParams()['password'];
 
-        if (!$this->validateInput($email, $password)) {
+        if (!$this->emailValidator->validateEmailFormat($email) && $this->passwordValidator->validatePassword($password)) {
             return $this->response->withStatus(400); //TODO: reason phrase?
         }
+
+        //TODO: Check if user exists
+
+        $password = password_hash($password, PASSWORD_DEFAULT);
 
         if (!$this->userRepo->createUser($email, $password)) {
             return $this->response->withStatus(400); //TODO: reason phrase?
         }
 
-        $this->response = $this->response->withStatus(201);
-
-        return $this->response;
-    }
-
-    protected function validateInput(string $email, string $password): bool {
-        return
-            $this->emailValidator->validateEmailFormat($email)
-            && $this->passwordValidator->validatePassword($password);
+        return $this->response->withStatus(201);
     }
 }
