@@ -23,7 +23,6 @@ class UserRepo implements UserRepoInterface {
      * @return bool True if user created, false otherwise
      */
     public function createUser(string $email, string $password): bool {
-        var_dump($password);
         $sql = 'INSERT INTO users (email,password) VALUES (:email,:password)';
         $statement = $this->pdo->prepare($sql);
         $statement->bindValue('email', $email, PDO::PARAM_STR);
