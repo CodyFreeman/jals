@@ -42,7 +42,7 @@ class CreateUserController {
     }
 
     /**
-     * Registers a new user
+     * Validates and registers a new user based on request's parameters
      */
     public function createUser(): ResponseInterface {
 

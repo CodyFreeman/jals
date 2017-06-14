@@ -90,11 +90,11 @@ class PasswordRules implements PasswordRulesInterface {
     }
 
     /**
-     * Validates valid character string is not empty if that type of character is needed.
+     * Validates $validCharacters is not empty if $requirement is above 0
      *
      * @param int $requirement Minimum number of this type of character
-     * @param string $validCharacters Valid Characters of this corresponding type
-     * @return bool
+     * @param string $validCharacters Valid Characters
+     * @return bool True if valid, false otherwise
      */
     protected function validateRule(int $requirement, string $validCharacters):bool{
         //TODO: Make up a better names for this function!
