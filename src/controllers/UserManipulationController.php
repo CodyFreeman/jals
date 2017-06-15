@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+
 namespace freeman\jals\controllers;
 
 use freeman\jals\interfaces\EmailValidatorInterface;
@@ -9,10 +10,7 @@ use freeman\jals\interfaces\UserRepoInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class UserController {
-
-    //NTS: Consider moving methods modifying user to CreateUserController and rename it ManipulateUserController
-
+class UserManipulationController {
     /** @var ServerRequestInterface $request */
     protected $request;
 
@@ -43,12 +41,33 @@ class UserController {
         $this->userRepo = $userRepo;
     }
 
-    public function logIn() {
+    /**
+     * Validates and registers a new user based on request's parameters
+     */
+    public function createUser(): ResponseInterface {
 
-    }
+        if (!isset($this->request->getQueryParams()['email'], $this->request->getQueryParams()['password'])) {
+            return $this->response->withStatus(400); //TODO: reason phrase?
+        }
 
-    public function logOut() {
+        $email = $this->request->getQueryParams()['email'];
+        $password = $this->request->getQueryParams()['password'];
 
+        if (!$this->emailValidator->validateEmailFormat($email) && $this->passwordValidator->validatePassword($password)) {
+            return $this->response->withStatus(400); //TODO: reason phrase?
+        }
+
+        if ($this->userRepo->userExists($email)){
+            return $this->response->withStatus(400); //TODO: reason phrase?
+        }
+
+        $password = password_hash($password, PASSWORD_DEFAULT);
+
+        if (!$this->userRepo->createUser($email, $password)) {
+            return $this->response->withStatus(400); //TODO: reason phrase?
+        }
+
+        return $this->response->withStatus(201);
     }
 
     /**
@@ -76,11 +95,6 @@ class UserController {
 
         // VALIDATES PASSWORD IS CORRECT
         if (!password_verify($password, $this->userRepo->getPasswordHash($email))) {
-            //TODO: WIP
-            var_dump($password);
-            var_dump(password_hash($password, PASSWORD_DEFAULT));
-            var_dump($this->userRepo->getPasswordHash($email));
-            var_dump(password_verify($password, $this->userRepo->getPasswordHash($email)));
             return $this->response->withStatus(400); //TODO: Reason phrase? Maybe use fobidden?
         }
 
@@ -105,7 +119,7 @@ class UserController {
             return $this->response->withStatus(400); //TODO: Reason phrase?
         }
 
-        // SETTING NEEDED VARIABLES FROM PARAMETERS
+        // SETS NEEDED VARIABLES FROM PARAMETERS
         $email = $params['email'];
         $password = $params['password'];
         $newPassword = $params['newPassword'];
@@ -125,7 +139,7 @@ class UserController {
             return $this->response->withStatus(400); //TODO: Reason phrase? Maybe use fobidden?
         }
 
-        // CHANGE PASSWORD
+        // CHANGES PASSWORD
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
         if (!$this->userRepo->changePassword($email, $hash)) {
@@ -134,5 +148,4 @@ class UserController {
 
         return $this->response->withStatus(200); //TODO: Reason phrase?
     }
-
 }

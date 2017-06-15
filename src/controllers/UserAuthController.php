@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-
 namespace freeman\jals\controllers;
 
 use freeman\jals\interfaces\EmailValidatorInterface;
@@ -10,7 +9,10 @@ use freeman\jals\interfaces\UserRepoInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class CreateUserController {
+class UserAuthController {
+
+    //NTS: Consider moving methods modifying user to UserManipulationController and rename it ManipulateUserController
+
     /** @var ServerRequestInterface $request */
     protected $request;
 
@@ -41,32 +43,14 @@ class CreateUserController {
         $this->userRepo = $userRepo;
     }
 
-    /**
-     * Validates and registers a new user based on request's parameters
-     */
-    public function createUser(): ResponseInterface {
+    public function logIn() {
 
-        if (!isset($this->request->getQueryParams()['email'], $this->request->getQueryParams()['password'])) {
-            return $this->response->withStatus(400); //TODO: reason phrase?
-        }
-
-        $email = $this->request->getQueryParams()['email'];
-        $password = $this->request->getQueryParams()['password'];
-
-        if (!$this->emailValidator->validateEmailFormat($email) && $this->passwordValidator->validatePassword($password)) {
-            return $this->response->withStatus(400); //TODO: reason phrase?
-        }
-
-        if ($this->userRepo->userExists($email)){
-            return $this->response->withStatus(400); //TODO: reason phrase?
-        }
-
-        $password = password_hash($password, PASSWORD_DEFAULT);
-
-        if (!$this->userRepo->createUser($email, $password)) {
-            return $this->response->withStatus(400); //TODO: reason phrase?
-        }
-
-        return $this->response->withStatus(201);
     }
+
+    public function logOut() {
+
+    }
+
+
+
 }

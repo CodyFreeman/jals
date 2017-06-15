@@ -10,8 +10,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
-use freeman\jals\controllers\CreateUserController;
-use freeman\jals\controllers\UserController;
+use freeman\jals\controllers\UserManipulationController;
+use freeman\jals\controllers\UserAuthController;
 use freeman\jals\inputValidation\EmailValidator;
 use freeman\jals\inputValidation\PasswordRules;
 use freeman\jals\inputValidation\PasswordValidator;
@@ -33,11 +33,13 @@ return [
 
     ResponseInterface::class => \DI\get(Response::class),
 
-
-    /* DEFINITIONS */
+    /* FACTORIES */
     PDO::class => function() {
         $dbConfig = json_decode(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'databaseConfig.json'));
-        return new PDO($dbConfig->dsn, $dbConfig->user, $dbConfig->password, $dbConfig->driverOptions);
+        $pdo = new PDO($dbConfig->dsn, $dbConfig->user, $dbConfig->password);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        return $pdo;
     },
 
     ServerRequest::class => function () {
@@ -60,7 +62,7 @@ return [
         );
     },
 
-    CreateUserController::class => DI\object(CreateUserController::class),
+    UserManipulationController::class => DI\object(UserManipulationController::class),
 
-    UserController::class => DI\object(UserController::class)
+    UserAuthController::class => DI\object(UserAuthController::class)
 ];

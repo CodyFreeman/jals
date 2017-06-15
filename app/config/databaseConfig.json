@@ -1,6 +1,5 @@
 {
   "dsn": "mysql:dbname=jals;host=localhost",
   "user": "",
-  "password": "",
-  "driverOptions": []
+  "password": ""
 }
