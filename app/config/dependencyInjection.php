@@ -11,6 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
 use freeman\jals\controllers\CreateUserController;
+use freeman\jals\controllers\UserController;
 use freeman\jals\inputValidation\EmailValidator;
 use freeman\jals\inputValidation\PasswordRules;
 use freeman\jals\inputValidation\PasswordValidator;
@@ -31,6 +32,7 @@ return [
     ServerRequestInterface::class => \DI\get(ServerRequest::class),
 
     ResponseInterface::class => \DI\get(Response::class),
+
 
     /* DEFINITIONS */
     PDO::class => function() {
@@ -58,6 +60,7 @@ return [
         );
     },
 
-    CreateUserController::class => DI\object(CreateUserController::class)
+    CreateUserController::class => DI\object(CreateUserController::class),
 
+    UserController::class => DI\object(UserController::class)
 ];

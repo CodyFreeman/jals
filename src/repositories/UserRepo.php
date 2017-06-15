@@ -64,7 +64,7 @@ class UserRepo implements UserRepoInterface {
         $sql = 'UPDATE users SET password=:newPassword WHERE email=:email';
         $statement = $this->pdo->prepare($sql);
         $statement->bindValue('email', $email, PDO::PARAM_STR);
-        $statement->bindValue('newEmail', $newPassword, PDO::PARAM_STR);
+        $statement->bindValue('newPassword', $newPassword, PDO::PARAM_STR);
         return $statement->execute();
     }
 
@@ -77,6 +77,6 @@ class UserRepo implements UserRepoInterface {
         $statement->bindValue('email', $email);
         $statement->execute();
         $hash = $statement->fetch();
-        return $hash ? $hash : '';
+        return $hash['password'] ? $hash['password'] : '';
     }
 }

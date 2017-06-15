@@ -10,6 +10,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class UserController {
+
+    //NTS: Consider moving methods modifying user to CreateUserController and rename it ManipulateUserController
+
     /** @var ServerRequestInterface $request */
     protected $request;
 
@@ -68,9 +71,15 @@ class UserController {
 
         // VALIDATES PASSWORD IS CORRECT
         if (!password_verify($password, $this->userRepo->getPasswordHash($email))) {
+            //TODO: WIP
+            var_dump($password);
+            var_dump(password_hash($password, PASSWORD_DEFAULT));
+            var_dump($this->userRepo->getPasswordHash($email));
+            var_dump(password_verify($password, $this->userRepo->getPasswordHash($email)));
             return $this->response->withStatus(400); //TODO: Reason phrase? Maybe use fobidden?
         }
 
+        // CHANGE EMAIL
         if (!$this->userRepo->changeEmail($email, $newEmail)){
             return $this->response->withStatus(400); //TODO: Reason phrase? Maybe use fobidden?
         }
@@ -98,15 +107,22 @@ class UserController {
 
         // CHECKS PASSWORD FORMAT
         if(!$this->passwordValidator->validatePassword($newPassword)){
-            return $this->response->withStatus(400);
+            return $this->response->withStatus(400); //TODO: Reason phrase?
         }
 
         // VALIDATES PASSWORD IS CORRECT
         if (!password_verify($password, $this->userRepo->getPasswordHash($email))) {
             return $this->response->withStatus(400); //TODO: Reason phrase? Maybe use fobidden?
         }
-        
 
+        // CHANGE PASSWORD
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+
+        if(!$this->userRepo->changePassword($email, $hash)){
+            return $this->response->withStatus(400); //TODO: Reason phrase? Maybe use fobidden?
+        }
+
+        return $this->response->withStatus(200); //TODO: Reason phrase?
     }
 
 }
