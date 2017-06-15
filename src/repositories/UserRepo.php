@@ -52,6 +52,13 @@ class UserRepo implements UserRepoInterface {
         return $statement->fetch() ? true : false;
     }
 
+    /**
+     * Changes email of user
+     *
+     * @param string $email user's email
+     * @param string $newEmail user's new email
+     * @return bool True if email changed, false otherwise
+     */
     public function changeEmail(string $email, string $newEmail): bool {
         $sql = 'UPDATE users SET email=:newEmail WHERE email=:email';
         $statement = $this->pdo->prepare($sql);
@@ -60,6 +67,13 @@ class UserRepo implements UserRepoInterface {
         return $statement->execute();
     }
 
+    /**
+     * Changes password of user
+     *
+     * @param string $email user's email
+     * @param string $newPassword user's new password
+     * @return bool True if password changed, false otherwise
+     */
     public function changePassword(string $email, string $newPassword): bool {
         $sql = 'UPDATE users SET password=:newPassword WHERE email=:email';
         $statement = $this->pdo->prepare($sql);
@@ -68,8 +82,14 @@ class UserRepo implements UserRepoInterface {
         return $statement->execute();
     }
 
+    /**
+     * Gets User's password hash
+     *
+     * @param string $email Email of user
+     * @return string Hash of password or empty string if not found
+     */
     public function getPasswordHash(string $email):string {
-        if(!$this->userExists($email)){
+        if(!$this->userExists($email)){ //TODO: Test if this if statement is even needed
             return '';
         }
         $sql = 'SELECT password FROM users WHERE email=:email';

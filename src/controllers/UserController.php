@@ -51,7 +51,12 @@ class UserController {
 
     }
 
-    public function changeEmail() {
+    /**
+     * Changes the email of a user
+     *
+     * @return ResponseInterface
+     */
+    public function changeEmail(): ResponseInterface {
         //TODO: ALL THIS COULD BE FUNCTIONS! I'M FEELING WET!
         $params = $this->request->getQueryParams();
         // CHECKS IF NEEDED QUERY PARAMETERS ARE SET
@@ -80,14 +85,19 @@ class UserController {
         }
 
         // CHANGE EMAIL
-        if (!$this->userRepo->changeEmail($email, $newEmail)){
+        if (!$this->userRepo->changeEmail($email, $newEmail)) {
             return $this->response->withStatus(400); //TODO: Reason phrase? Maybe use fobidden?
         }
 
         return $this->response->withStatus(200); //TODO: Reason phrase?
     }
 
-    public function changePassword() {
+    /**
+     * Changes the password of a user
+     *
+     * @return ResponseInterface
+     */
+    public function changePassword(): ResponseInterface {
         //TODO: ALL THIS COULD BE FUNCTIONS! I'M FEELING WET!
         $params = $this->request->getQueryParams();
 
@@ -106,7 +116,7 @@ class UserController {
         }
 
         // CHECKS PASSWORD FORMAT
-        if(!$this->passwordValidator->validatePassword($newPassword)){
+        if (!$this->passwordValidator->validatePassword($newPassword)) {
             return $this->response->withStatus(400); //TODO: Reason phrase?
         }
 
@@ -118,7 +128,7 @@ class UserController {
         // CHANGE PASSWORD
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
-        if(!$this->userRepo->changePassword($email, $hash)){
+        if (!$this->userRepo->changePassword($email, $hash)) {
             return $this->response->withStatus(400); //TODO: Reason phrase? Maybe use fobidden?
         }
 
