@@ -1,12 +1,10 @@
 <?php
 declare(strict_types=1);
 
-
 namespace freeman\jals\controllers;
 
-use freeman\jals\interfaces\EmailValidatorInterface;
-use freeman\jals\interfaces\PasswordValidatorInterface;
 use freeman\jals\interfaces\UserRepoInterface;
+use freeman\jals\interfaces\InputValidationServiceInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -17,11 +15,8 @@ class UserManipulationController {
     /** @var ResponseInterface $response */
     protected $response;
 
-    /** @var EmailValidatorInterface $emailValidator */
-    protected $emailValidator;
-
-    /** @var PasswordValidatorInterface $passwordValidator */
-    protected $passwordValidator;
+    /** @var  InputValidationServiceInterface */
+    protected $inputValidationService;
 
     /** @var UserRepoInterface $userRepo */
     protected $userRepo;
@@ -30,14 +25,12 @@ class UserManipulationController {
     public function __construct(
         ServerRequestInterface $request,
         ResponseInterface $response,
-        EmailValidatorInterface $emailValidator,
-        PasswordValidatorInterface $passwordValidator,
+        InputValidationServiceInterface $inputValidationService,
         UserRepoInterface $userRepo
     ) {
         $this->request = $request;
         $this->response = $response->withHeader('Content-Type', 'application/json');
-        $this->emailValidator = $emailValidator;
-        $this->passwordValidator = $passwordValidator;
+        $this->inputValidationService = $inputValidationService;
         $this->userRepo = $userRepo;
     }
 
@@ -53,7 +46,7 @@ class UserManipulationController {
         $email = $this->request->getQueryParams()['email'];
         $password = $this->request->getQueryParams()['password'];
 
-        if (!$this->emailValidator->validateEmailFormat($email) && $this->passwordValidator->validatePassword($password)) {
+        if (!$this->inputValidationService->validateEmail($email) && $this->inputValidationService->validatePasswordRules($password)) {
             return $this->response->withStatus(400); //TODO: reason phrase?
         }
 
@@ -89,7 +82,7 @@ class UserManipulationController {
         $password = $params['password'];
 
         // CHECKS EMAIL FORMAT
-        if (!$this->emailValidator->validateEmailFormat($email) || !$this->emailValidator->validateEmailFormat($newEmail)) {
+        if (!$this->inputValidationService->validateEmail($email) || !$this->inputValidationService->validateEmail($newEmail)) {
             return $this->response->withStatus(400); //TODO: Reason phrase?
         }
 
@@ -125,12 +118,12 @@ class UserManipulationController {
         $newPassword = $params['newPassword'];
 
         // CHECKS EMAIL FORMAT
-        if (!$this->emailValidator->validateEmailFormat($email) || !$this->emailValidator->validateEmailFormat($email)) {
+        if (!$this->inputValidationService->validateEmail($email) || !$this->inputValidationService->validateEmail($email)) {
             return $this->response->withStatus(400); //TODO: Reason phrase?
         }
 
         // CHECKS PASSWORD FORMAT
-        if (!$this->passwordValidator->validatePassword($newPassword)) {
+        if (!$this->inputValidationService->validatePasswordRules($newPassword)) {
             return $this->response->withStatus(400); //TODO: Reason phrase?
         }
 

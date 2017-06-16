@@ -5,6 +5,9 @@ use freeman\jals\interfaces\EmailValidatorInterface;
 use freeman\jals\interfaces\PasswordRulesInterface;
 use freeman\jals\interfaces\PasswordValidatorInterface;
 use freeman\jals\interfaces\UserRepoInterface;
+use freeman\jals\interfaces\UserManipulationServiceInterface;
+use freeman\jals\interfaces\UserAuthServiceInterface;
+use freeman\jals\interfaces\InputValidationServiceInterface;
 use freeman\jals\repositories\UserRepo;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -15,6 +18,9 @@ use freeman\jals\controllers\UserAuthController;
 use freeman\jals\inputValidation\EmailValidator;
 use freeman\jals\inputValidation\PasswordRules;
 use freeman\jals\inputValidation\PasswordValidator;
+use freeman\jals\services\UserManipulationService;
+use freeman\jals\services\UserAuthService;
+use freeman\jals\services\InputValidationService;
 
 
 return [
@@ -32,6 +38,12 @@ return [
     ServerRequestInterface::class => \DI\get(ServerRequest::class),
 
     ResponseInterface::class => \DI\get(Response::class),
+
+    UserManipulationServiceInterface::class => \DI\get(UserManipulationService::class),
+
+    UserAuthServiceInterface::class => \DI\get(UserAuthService::class),
+
+    InputValidationServiceInterface::class => \DI\get(InputValidationService::class),
 
     /* FACTORIES */
     PDO::class => function() {
@@ -62,7 +74,16 @@ return [
         );
     },
 
+    /* NON-FACTORY OBJECT CREATION */
+
     UserManipulationController::class => DI\object(UserManipulationController::class),
 
-    UserAuthController::class => DI\object(UserAuthController::class)
+    UserAuthController::class => DI\object(UserAuthController::class),
+
+    UserManipulationService::class => DI\object(UserManipulationService::class),
+
+    UserAuthService::class => DI\object(UserAuthService::class),
+
+    InputValidationService::class => DI\object(InputValidationService::class)
+
 ];

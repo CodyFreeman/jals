@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace freeman\jals\controllers;
 
-use freeman\jals\interfaces\EmailValidatorInterface;
-use freeman\jals\interfaces\PasswordValidatorInterface;
+use freeman\jals\interfaces\InputValidationServiceInterface;
 use freeman\jals\interfaces\UserRepoInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -19,11 +18,8 @@ class UserAuthController {
     /** @var ResponseInterface $response */
     protected $response;
 
-    /** @var EmailValidatorInterface $emailValidator */
-    protected $emailValidator;
-
-    /** @var PasswordValidatorInterface $passwordValidator */
-    protected $passwordValidator;
+    /** @var InputValidationServiceInterface $inputValidationService */
+    protected $inputValidationService;
 
     /** @var UserRepoInterface $userRepo */
     protected $userRepo;
@@ -32,14 +28,12 @@ class UserAuthController {
     public function __construct(
         ServerRequestInterface $request,
         ResponseInterface $response,
-        EmailValidatorInterface $emailValidator,
-        PasswordValidatorInterface $passwordValidator,
+        InputValidationServiceInterface $inputValidationService,
         UserRepoInterface $userRepo
     ) {
         $this->request = $request;
         $this->response = $response->withHeader('Content-Type', 'application/json');
-        $this->emailValidator = $emailValidator;
-        $this->passwordValidator = $passwordValidator;
+        $this->inputValidationService = $inputValidationService;
         $this->userRepo = $userRepo;
     }
 
@@ -50,7 +44,5 @@ class UserAuthController {
     public function logOut() {
 
     }
-
-
 
 }

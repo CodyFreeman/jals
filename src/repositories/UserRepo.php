@@ -45,11 +45,11 @@ class UserRepo implements UserRepoInterface {
      * @return bool True if email found, false otherwise
      */
     public function userExists(string $email): bool {
-        $sql = 'SELECT * FROM users WHERE email = :email';
+        $sql = 'SELECT COUNT(*) FROM users WHERE email = :email';
         $statement = $this->pdo->prepare($sql);
         $statement->bindValue('email', $email, PDO::PARAM_STR);
         $statement->execute();
-        return $statement->fetch() ? true : false;
+        return $statement->fetch()[0] ? true : false;
     }
 
     /**
