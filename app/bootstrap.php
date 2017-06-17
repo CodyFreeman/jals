@@ -30,6 +30,7 @@ switch ($routeInfo[0]){
     case \FastRoute\Dispatcher::FOUND:
         $parameters = $routeInfo[2];
         $response = $container->call($routeInfo[1], $routeInfo[2]);
+        $response = $response->withHeader('Content-Type', 'application/json');
         $emitter = new \Zend\Diactoros\Response\SapiEmitter();
         $emitter->emit($response);
         break;

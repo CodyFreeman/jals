@@ -32,7 +32,7 @@ class UserAuthController {
         UserRepoInterface $userRepo
     ) {
         $this->request = $request;
-        $this->response = $response->withHeader('Content-Type', 'application/json');
+        $this->response = $response;
         $this->inputValidationService = $inputValidationService;
         $this->userRepo = $userRepo;
     }
