@@ -23,7 +23,7 @@ class UserRepo implements UserRepoInterface {
      * @return bool True if user created, false otherwise
      */
     public function createUser(string $email, string $password): bool {
-        $sql = 'INSERT INTO users (email,password) VALUES (:email,:password)';
+        $sql = 'INSERT INTO `users` (`email`,`password`) VALUES (:email,:password)';
         $statement = $this->pdo->prepare($sql);
         $statement->bindValue('email', $email, PDO::PARAM_STR);
         $statement->bindValue('password', $password, PDO::PARAM_STR);
@@ -45,11 +45,12 @@ class UserRepo implements UserRepoInterface {
      * @return bool True if email found, false otherwise
      */
     public function userExists(string $email): bool {
-        $sql = 'SELECT COUNT(*) FROM users WHERE email = :email';
+        $sql = 'SELECT COUNT(*) FROM `users` WHERE `email` = :email';
         $statement = $this->pdo->prepare($sql);
         $statement->bindValue('email', $email, PDO::PARAM_STR);
         $statement->execute();
-        return $statement->fetch()[0] ? true : false;
+        $result = $statement->fetch();
+        return (bool) $result[0] ?? false;
     }
 
     /**
@@ -60,7 +61,7 @@ class UserRepo implements UserRepoInterface {
      * @return bool True if email changed, false otherwise
      */
     public function changeEmail(string $email, string $newEmail): bool {
-        $sql = 'UPDATE users SET email=:newEmail WHERE email=:email';
+        $sql = 'UPDATE `users` SET `email`=:newEmail WHERE `email`=:email';
         $statement = $this->pdo->prepare($sql);
         $statement->bindValue('email', $email, PDO::PARAM_STR);
         $statement->bindValue('newEmail', $newEmail, PDO::PARAM_STR);
@@ -75,7 +76,7 @@ class UserRepo implements UserRepoInterface {
      * @return bool True if password changed, false otherwise
      */
     public function changePassword(string $email, string $newPassword): bool {
-        $sql = 'UPDATE users SET password=:newPassword WHERE email=:email';
+        $sql = 'UPDATE `users` SET `password`=:newPassword WHERE `email`=:email';
         $statement = $this->pdo->prepare($sql);
         $statement->bindValue('email', $email, PDO::PARAM_STR);
         $statement->bindValue('newPassword', $newPassword, PDO::PARAM_STR);
@@ -89,14 +90,11 @@ class UserRepo implements UserRepoInterface {
      * @return string Hash of password or empty string if not found
      */
     public function getPasswordHash(string $email):string {
-        if(!$this->userExists($email)){ //TODO: Test if this if statement is even needed
-            return '';
-        }
-        $sql = 'SELECT password FROM users WHERE email=:email';
+        $sql = 'SELECT `password` FROM `users` WHERE `email`=:email';
         $statement = $this->pdo->prepare($sql);
         $statement->bindValue('email', $email);
         $statement->execute();
         $hash = $statement->fetch();
-        return $hash['password'] ? $hash['password'] : '';
+        return $hash['password'] ?? '';
     }
 }

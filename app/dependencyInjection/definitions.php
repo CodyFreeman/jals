@@ -1,12 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 use freeman\jals\interfaces\EmailValidatorInterface;
 use freeman\jals\interfaces\PasswordRulesInterface;
 use freeman\jals\interfaces\PasswordValidatorInterface;
 use freeman\jals\interfaces\UserRepoInterface;
-use freeman\jals\interfaces\UserManipulationServiceInterface;
-use freeman\jals\interfaces\UserAuthServiceInterface;
 use freeman\jals\interfaces\InputValidationServiceInterface;
 use freeman\jals\repositories\UserRepo;
 use Psr\Http\Message\ServerRequestInterface;
@@ -18,8 +17,6 @@ use freeman\jals\controllers\UserAuthController;
 use freeman\jals\inputValidation\EmailValidator;
 use freeman\jals\inputValidation\PasswordRules;
 use freeman\jals\inputValidation\PasswordValidator;
-use freeman\jals\services\UserManipulationService;
-use freeman\jals\services\UserAuthService;
 use freeman\jals\services\InputValidationService;
 
 
@@ -39,15 +36,11 @@ return [
 
     ResponseInterface::class => \DI\get(Response::class),
 
-    UserManipulationServiceInterface::class => \DI\get(UserManipulationService::class),
-
-    UserAuthServiceInterface::class => \DI\get(UserAuthService::class),
-
     InputValidationServiceInterface::class => \DI\get(InputValidationService::class),
 
     /* FACTORIES */
     PDO::class => function() {
-        $dbConfig = json_decode(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'databaseConfig.json'));
+        $dbConfig = json_decode(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'databaseConfig.json'));
         $pdo = new PDO($dbConfig->dsn, $dbConfig->user, $dbConfig->password);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
@@ -59,7 +52,7 @@ return [
     },
 
     PasswordRules::class => function () {
-        $rules = json_decode(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'passwordRules.json'));
+        $rules = json_decode(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'passwordRules.json'));
         return new PasswordRules(
             $rules->passwordRequirements->minSymbols,
             $rules->passwordRequirements->minNumbers,
@@ -79,10 +72,6 @@ return [
     UserManipulationController::class => DI\object(UserManipulationController::class),
 
     UserAuthController::class => DI\object(UserAuthController::class),
-
-    UserManipulationService::class => DI\object(UserManipulationService::class),
-
-    UserAuthService::class => DI\object(UserAuthService::class),
 
     InputValidationService::class => DI\object(InputValidationService::class)
 

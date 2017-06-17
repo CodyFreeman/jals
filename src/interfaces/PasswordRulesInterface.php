@@ -7,7 +7,7 @@ namespace freeman\jals\interfaces;
 
 interface PasswordRulesInterface {
     public function __construct(
-        int $reqPassSymbols,
+        int $reqSymbols,
         int $reqPassNumbers,
         int $reqPassUpper,
         int $reqPassLower,
@@ -21,51 +21,51 @@ interface PasswordRulesInterface {
     /**
      * @return int
      */
-    public function getReqPassSymbols(): int;
+    public function getReqSymbols(): int;
 
     /**
      * @return int
      */
-    public function getReqPassNumbers(): int;
+    public function getReqNumbers(): int;
 
     /**
      * @return int
      */
-    public function getReqPassUpper(): int;
+    public function getReqUpper(): int;
 
     /**
      * @return int
      */
-    public function getReqPassLower(): int;
+    public function getReqLower(): int;
 
     /**
      * @return int
      */
-    public function getReqPassMinLength(): int;
+    public function getMinLength(): int;
 
     /**
      * @return int
      */
-    public function getReqPassMaxLength(): int;
+    public function getMaxLength(): int;
 
     /**
      * @return string
      */
-    public function getValidPassSymbols(): string;
+    public function getValidSymbols(): string;
 
     /**
      * @return string
      */
-    public function getValidPassNumbers(): string;
+    public function getValidNumbers(): string;
 
     /**
      * @return string
      */
-    public function getValidPassUpper(): string;
+    public function getValidUpper(): string;
 
     /**
      * @return string
      */
-    public function getValidPassLower(): string;
+    public function getValidLower(): string;
 
 }

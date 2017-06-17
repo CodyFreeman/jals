@@ -35,18 +35,20 @@ class UserManipulationController {
     }
 
     /**
-     * Validates and registers a new user based on request's parameters
+     * Validates and registers a new user based on Request's parameters
      */
     public function createUser(): ResponseInterface {
+        $params = $this->request->getQueryParams();
 
-        if (!isset($this->request->getQueryParams()['email'], $this->request->getQueryParams()['password'])) {
-            return $this->response->withStatus(400); //TODO: reason phrase?
+        // CHECKS IF NEEDED QUERY PARAMETERS ARE SET
+        if (!isset($params['email'], $params['password'])) {
+            return $this->response->withStatus(400); //TODO: Reason phrase?
         }
 
-        $email = $this->request->getQueryParams()['email'];
-        $password = $this->request->getQueryParams()['password'];
+        $email = $params['email'];
+        $password = $params['password'];
 
-        if (!$this->inputValidationService->validateEmail($email) && $this->inputValidationService->validatePasswordRules($password)) {
+        if (!$this->inputValidationService->validateEmail($email) || !$this->inputValidationService->validatePasswordRules($password)) {
             return $this->response->withStatus(400); //TODO: reason phrase?
         }
 
@@ -71,6 +73,7 @@ class UserManipulationController {
     public function changeEmail(): ResponseInterface {
         //TODO: ALL THIS COULD BE FUNCTIONS! I'M FEELING WET!
         $params = $this->request->getQueryParams();
+
         // CHECKS IF NEEDED QUERY PARAMETERS ARE SET
         if (!isset($params['email'], $params['newEmail'], $params['password'])) {
             return $this->response->withStatus(400); //TODO: Reason phrase?

@@ -33,7 +33,7 @@ class PasswordValidator implements PasswordValidatorInterface {
      * @return bool True if password is at or between min and max requirements
      */
     protected function validateLengthRules(string $password):bool {
-       return strlen($password) >= $this->rules->getReqPassMinLength() && strlen($password) <= $this->rules->getReqPassMaxLength();
+       return strlen($password) >= $this->rules->getMinLength() && strlen($password) <= $this->rules->getMaxLength();
     }
 
     /**
@@ -44,10 +44,10 @@ class PasswordValidator implements PasswordValidatorInterface {
      */
     protected function validateCharacterRequirements($password):bool {
         return
-            $this->validateCharacterRule($password, $this->rules->getReqPassSymbols(), $this->rules->getValidPassSymbols())
-            && $this->validateCharacterRule($password, $this->rules->getReqPassNumbers(), $this->rules->getValidPassNumbers())
-            && $this->validateCharacterRule($password, $this->rules->getReqPassUpper(), $this->rules->getValidPassUpper())
-            && $this->validateCharacterRule($password, $this->rules->getReqPassLower(), $this->rules->getValidPassLower());
+            $this->validateCharacterRule($password, $this->rules->getReqSymbols(), $this->rules->getValidSymbols())
+            && $this->validateCharacterRule($password, $this->rules->getReqNumbers(), $this->rules->getValidNumbers())
+            && $this->validateCharacterRule($password, $this->rules->getReqUpper(), $this->rules->getValidUpper())
+            && $this->validateCharacterRule($password, $this->rules->getReqLower(), $this->rules->getValidLower());
     }
 
     /**

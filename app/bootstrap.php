@@ -8,14 +8,14 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'vendo
 $containerBuilder = new \DI\ContainerBuilder();
 $containerBuilder->useAutowiring(true);
 $containerBuilder->useAnnotations(false);
-$containerBuilder->addDefinitions(__DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'dependencyInjection.php');
+$containerBuilder->addDefinitions(__DIR__ . DIRECTORY_SEPARATOR . 'dependencyInjection' . DIRECTORY_SEPARATOR . 'definitions.php');
 $container = $containerBuilder->build();
 
 // CREATE REQUEST
 $request = $container->get(\Psr\Http\Message\ServerRequestInterface::class);
 
 // REQUIRING AND SETTING UP ROUTER
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'routes.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'router' . DIRECTORY_SEPARATOR . 'routes.php';
 $routeInfo = $dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());
 
 // ROUTING TO DISPATCHER

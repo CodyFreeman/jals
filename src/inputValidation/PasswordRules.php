@@ -9,42 +9,42 @@ use Exception;
 
 class PasswordRules implements PasswordRulesInterface {
 
-    protected $reqPassSymbols;
-    protected $reqPassNumbers;
-    protected $reqPassUpper;
-    protected $reqPassLower;
-    protected $reqPassMinLength;
-    protected $reqPassMaxLength;
-    protected $validPassSymbols;
-    protected $validPassNumbers;
-    protected $validPassUpper;
-    protected $validPassLower;
+    protected $reqSymbols;
+    protected $reqNumbers;
+    protected $reqUpper;
+    protected $reqLower;
+    protected $minLength;
+    protected $maxLength;
+    protected $validSymbols;
+    protected $validNumbers;
+    protected $validUpper;
+    protected $validLower;
 
     public function __construct(
-        int $reqPassSymbols,
-        int $reqPassNumbers,
-        int $reqPassUpper,
-        int $reqPassLower,
-        int $reqPassMinLength,
-        int $reqPassMaxLength,
-        string $validPassSymbols,
-        string $validPassNumbers,
-        string $validPassUpper,
-        string $validPassLower
+        int $reqSymbols,
+        int $reqNumbers,
+        int $reqUpper,
+        int $reqLower,
+        int $reqMinLength,
+        int $reqMaxLength,
+        string $validSymbols,
+        string $validNumbers,
+        string $validUpper,
+        string $validLower
     ) {
-        $this->reqPassSymbols = $reqPassSymbols;
-        $this->reqPassNumbers = $reqPassNumbers;
-        $this->reqPassUpper = $reqPassUpper;
-        $this->reqPassLower = $reqPassLower;
-        $this->reqPassMinLength = $reqPassMinLength;
-        $this->reqPassMaxLength = $reqPassMaxLength;
-        $this->validPassSymbols = $validPassSymbols;
-        $this->validPassNumbers = $validPassNumbers;
-        $this->validPassUpper = $validPassUpper;
-        $this->validPassLower = $validPassLower;
+        $this->validateRules($reqSymbols, $reqNumbers, $reqUpper, $reqLower, $reqMinLength, $reqMaxLength, $validSymbols, $validNumbers, $validUpper, $validLower);
+        $this->reqSymbols = $reqSymbols;
+        $this->reqNumbers = $reqNumbers;
+        $this->reqUpper = $reqUpper;
+        $this->reqLower = $reqLower;
+        $this->minLength = $reqMinLength;
+        $this->maxLength = $reqMaxLength;
+        $this->validSymbols = $validSymbols;
+        $this->validNumbers = $validNumbers;
+        $this->validUpper = $validUpper;
+        $this->validLower = $validLower;
     }
 
-    //TODO: consider moving validation of rules to separate class
     protected function validateRules(
         int $reqPassSymbols,
         int $reqPassNumbers,
@@ -68,23 +68,23 @@ class PasswordRules implements PasswordRulesInterface {
 
         $totalMinChars = $reqPassSymbols + $reqPassNumbers + $reqPassUpper + $reqPassLower;
 
-        if($totalMinChars < $reqPassMaxLength){
+        if($totalMinChars > $reqPassMaxLength){
             throw new Exception('Error in supplied password rules');
         }
 
-        if($this->validateRule($reqPassSymbols, $validPassSymbols)){
+        if(!$this->validateRule($reqPassSymbols, $validPassSymbols)){
             throw new Exception('Error in supplied password rules');
         }
 
-        if($this->validateRule($reqPassNumbers, $validPassNumbers)){
+        if(!$this->validateRule($reqPassNumbers, $validPassNumbers)){
             throw new Exception('Error in supplied password rules');
         }
 
-        if($this->validateRule($reqPassUpper, $validPassUpper)){
+        if(!$this->validateRule($reqPassUpper, $validPassUpper)){
             throw new Exception('Error in supplied password rules');
         }
 
-        if($this->validateRule($reqPassLower, $validPassLower)){
+        if(!$this->validateRule($reqPassLower, $validPassLower)){
             throw new Exception('Error in supplied password rules');
         }
     }
@@ -97,7 +97,6 @@ class PasswordRules implements PasswordRulesInterface {
      * @return bool True if valid, false otherwise
      */
     protected function validateRule(int $requirement, string $validCharacters):bool{
-        //TODO: Make up a better names for this function!
         return $requirement > 0 && ! empty($validCharacters) || $requirement === 0;
     }
 
@@ -106,8 +105,8 @@ class PasswordRules implements PasswordRulesInterface {
      *
      * @return int
      */
-    public function getReqPassSymbols(): int {
-        return $this->reqPassSymbols;
+    public function getReqSymbols(): int {
+        return $this->reqSymbols;
     }
 
     /**
@@ -115,8 +114,8 @@ class PasswordRules implements PasswordRulesInterface {
      *
      * @return int
      */
-    public function getReqPassNumbers(): int {
-        return $this->reqPassNumbers;
+    public function getReqNumbers(): int {
+        return $this->reqNumbers;
     }
 
     /**
@@ -124,8 +123,8 @@ class PasswordRules implements PasswordRulesInterface {
      *
      * @return int
      */
-    public function getReqPassUpper(): int {
-        return $this->reqPassUpper;
+    public function getReqUpper(): int {
+        return $this->reqUpper;
     }
 
     /**
@@ -133,8 +132,8 @@ class PasswordRules implements PasswordRulesInterface {
      *
      * @return int
      */
-    public function getReqPassLower(): int {
-        return $this->reqPassLower;
+    public function getReqLower(): int {
+        return $this->reqLower;
     }
 
     /**
@@ -142,8 +141,8 @@ class PasswordRules implements PasswordRulesInterface {
      *
      * @return int
      */
-    public function getReqPassMinLength(): int {
-        return $this->reqPassMinLength;
+    public function getMinLength(): int {
+        return $this->minLength;
     }
 
     /**
@@ -151,8 +150,8 @@ class PasswordRules implements PasswordRulesInterface {
      *
      * @return int
      */
-    public function getReqPassMaxLength(): int {
-        return $this->reqPassMaxLength;
+    public function getMaxLength(): int {
+        return $this->maxLength;
     }
 
     /**
@@ -161,16 +160,16 @@ class PasswordRules implements PasswordRulesInterface {
      * @return string
      */
 
-    public function getValidPassSymbols(): string {
-        return $this->validPassSymbols;
+    public function getValidSymbols(): string {
+        return $this->validSymbols;
     }
     /**
      * Returns a string of valid numbers for passwords
      *
      * @return string
      */
-    public function getValidPassNumbers(): string {
-        return $this->validPassNumbers;
+    public function getValidNumbers(): string {
+        return $this->validNumbers;
     }
 
     /**
@@ -178,8 +177,8 @@ class PasswordRules implements PasswordRulesInterface {
      *
      * @return string
      */
-    public function getValidPassUpper(): string {
-        return $this->validPassUpper;
+    public function getValidUpper(): string {
+        return $this->validUpper;
     }
 
     /**
@@ -187,7 +186,7 @@ class PasswordRules implements PasswordRulesInterface {
      *
      * @return string
      */
-    public function getValidPassLower(): string {
-        return $this->validPassLower;
+    public function getValidLower(): string {
+        return $this->validLower;
     }
 }

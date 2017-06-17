@@ -10,8 +10,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class UserAuthController {
 
-    //NTS: Consider moving methods modifying user to UserManipulationController and rename it ManipulateUserController
-
     /** @var ServerRequestInterface $request */
     protected $request;
 
