@@ -27,7 +27,8 @@ class UserRepo implements UserRepoInterface {
         $statement = $this->pdo->prepare($sql);
         $statement->bindValue('email', $email, PDO::PARAM_STR);
         $statement->bindValue('password', $password, PDO::PARAM_STR);
-        return $statement->execute();
+        $statement->execute();
+        return $this->userExists($email);
     }
 
     public function logIn(string $email, string $password) {
@@ -50,6 +51,7 @@ class UserRepo implements UserRepoInterface {
         $statement->bindValue('email', $email, PDO::PARAM_STR);
         $statement->execute();
         $result = $statement->fetch();
+
         return (bool) $result[0] ?? false;
     }
 
@@ -65,6 +67,7 @@ class UserRepo implements UserRepoInterface {
         $statement = $this->pdo->prepare($sql);
         $statement->bindValue('email', $email, PDO::PARAM_STR);
         $statement->bindValue('newEmail', $newEmail, PDO::PARAM_STR);
+
         return $statement->execute();
     }
 
@@ -80,21 +83,40 @@ class UserRepo implements UserRepoInterface {
         $statement = $this->pdo->prepare($sql);
         $statement->bindValue('email', $email, PDO::PARAM_STR);
         $statement->bindValue('newPassword', $newPassword, PDO::PARAM_STR);
+
         return $statement->execute();
     }
 
     /**
-     * Gets User's password hash
+     * Gets user's password hash
      *
      * @param string $email Email of user
      * @return string Hash of password or empty string if not found
      */
-    public function getPasswordHash(string $email):string {
+    public function getPasswordHash(string $email): string {
         $sql = 'SELECT `password` FROM `users` WHERE `email`=:email';
         $statement = $this->pdo->prepare($sql);
-        $statement->bindValue('email', $email);
+        $statement->bindValue('email', $email, PDO::PARAM_STR);
         $statement->execute();
-        $hash = $statement->fetch();
-        return $hash['password'] ?? '';
+        $result = $statement->fetch();
+
+        return $result['password'] ?? '';
+    }
+
+    /**
+     * Gets user's id.
+     *
+     * @param string $email Email of user
+     * @return int|null Returns user id or null
+     */
+
+    public function getUserId(string $email) {
+        $sql = 'SELECT `id` FROM `users` WHERE `email`=:email';
+        $statement = $this->pdo->prepare($sql);
+        $statement->bindValue('email', $email, PDO::PARAM_STR);
+        $statement->execute();
+        $id = $statement->fetch();
+
+        return $id ? $id : null;
     }
 }

@@ -7,6 +7,8 @@ use freeman\jals\interfaces\PasswordRulesInterface;
 use freeman\jals\interfaces\PasswordValidatorInterface;
 use freeman\jals\interfaces\UserRepoInterface;
 use freeman\jals\interfaces\InputValidationServiceInterface;
+use freeman\jals\interfaces\UserSessionServiceInterface;
+use freeman\jals\interfaces\SessionHandlerInterface;
 use freeman\jals\repositories\UserRepo;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -17,7 +19,9 @@ use freeman\jals\controllers\UserAuthController;
 use freeman\jals\inputValidation\EmailValidator;
 use freeman\jals\inputValidation\PasswordRules;
 use freeman\jals\inputValidation\PasswordValidator;
+use freeman\jals\sessionHandler\SessionHandler;
 use freeman\jals\services\InputValidationService;
+use freeman\jals\services\UserSessionService;
 
 
 return [
@@ -38,12 +42,18 @@ return [
 
     InputValidationServiceInterface::class => \DI\get(InputValidationService::class),
 
+    UserSessionServiceInterface::class => \DI\get(UserSessionService::class),
+
+    SessionHandlerInterface::class => \DI\get(SessionHandler::class),
+
     /* FACTORIES */
     PDO::class => function() {
+
         $dbConfig = json_decode(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'databaseConfig.json'));
         $pdo = new PDO($dbConfig->dsn, $dbConfig->user, $dbConfig->password);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+
         return $pdo;
     },
 
@@ -52,7 +62,9 @@ return [
     },
 
     PasswordRules::class => function () {
+
         $rules = json_decode(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'passwordRules.json'));
+
         return new PasswordRules(
             $rules->passwordRequirements->minSymbols,
             $rules->passwordRequirements->minNumbers,
@@ -73,6 +85,10 @@ return [
 
     UserAuthController::class => DI\object(UserAuthController::class),
 
-    InputValidationService::class => DI\object(InputValidationService::class)
+    InputValidationService::class => DI\object(InputValidationService::class),
+
+    SessionHandler::class => DI\object(SessionHandler::class),
+
+    UserSessionService::class => DI\object(UserSessionService::class)
 
 ];

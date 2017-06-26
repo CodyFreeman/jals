@@ -38,6 +38,7 @@ class UserManipulationController {
      * Validates and registers a new user based on Request's parameters
      */
     public function createUser(): ResponseInterface {
+
         $params = $this->request->getQueryParams();
 
         // CHECKS IF NEEDED QUERY PARAMETERS ARE SET
@@ -47,7 +48,6 @@ class UserManipulationController {
 
         $email = $params['email'];
         $password = $params['password'];
-
         if (!$this->inputValidationService->validateEmail($email) || !$this->inputValidationService->validatePasswordRules($password)) {
             return $this->response->withStatus(400); //TODO: reason phrase?
         }

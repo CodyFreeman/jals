@@ -8,8 +8,12 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
 
     $routeCollector->addRoute('POST', '/users/register', [UserManipulationController::class, 'createUser']);
 
-    $routeCollector->addRoute('PATCH', '/users/changeEmail', [UserManipulationController::class, 'changeEmail']);
+    $routeCollector->addRoute('PATCH', '/users/changeemail', [UserManipulationController::class, 'changeEmail']);
 
-    $routeCollector->addRoute('PATCH', '/users/changePassword', [UserManipulationController::class, 'changePassword']);
+    $routeCollector->addRoute('PATCH', '/users/changepassword', [UserManipulationController::class, 'changePassword']);
+
+    $routeCollector->addRoute('POST', '/users/login', [UserAuthController::class, 'logIn']);
+
+    $routeCollector->addRoute('POST', '/users/logout', [UserAuthController::class, 'logOut']);
 
 });
