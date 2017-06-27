@@ -47,7 +47,7 @@ class UserAuthController {
      * @return ResponseInterface
      */
     public function logIn() {
-        $params = $this->request->getQueryParams();
+        $params = $this->request->getParsedBody();
         // CHECKS IF NEEDED QUERY PARAMETERS ARE SET
         if (!isset($params['email'], $params['password'])) {
             return $this->response->withStatus(400); //TODO: Reason phrase?

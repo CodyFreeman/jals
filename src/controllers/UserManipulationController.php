@@ -39,7 +39,7 @@ class UserManipulationController {
      */
     public function createUser(): ResponseInterface {
 
-        $params = $this->request->getQueryParams();
+        $params = $this->request->getParsedBody();
 
         // CHECKS IF NEEDED QUERY PARAMETERS ARE SET
         if (!isset($params['email'], $params['password'])) {
@@ -72,7 +72,7 @@ class UserManipulationController {
      */
     public function changeEmail(): ResponseInterface {
         //TODO: ALL THIS COULD BE FUNCTIONS! I'M FEELING WET!
-        $params = $this->request->getQueryParams();
+        $params = $this->request->getParsedBody();
 
         // CHECKS IF NEEDED QUERY PARAMETERS ARE SET
         if (!isset($params['email'], $params['newEmail'], $params['password'])) {
@@ -94,7 +94,7 @@ class UserManipulationController {
             return $this->response->withStatus(400); //TODO: Reason phrase? Maybe use fobidden?
         }
 
-        // CHANGE EMAIL
+        // CHANGES EMAIL
         if (!$this->userRepo->changeEmail($email, $newEmail)) {
             return $this->response->withStatus(400); //TODO: Reason phrase? Maybe use fobidden?
         }
@@ -109,7 +109,7 @@ class UserManipulationController {
      */
     public function changePassword(): ResponseInterface {
         //TODO: ALL THIS COULD BE FUNCTIONS! I'M FEELING WET!
-        $params = $this->request->getQueryParams();
+        $params = $this->request->getParsedBody();
 
         if (!isset($params['email'], $params['newPassword'], $params['password'])) {
             return $this->response->withStatus(400); //TODO: Reason phrase?
