@@ -16,7 +16,7 @@ class UserSessionService implements UserSessionServiceInterface {
 
     public function logIn(int $id): bool {
         return $this->sessionHandler->write('user', $id, 'userId')
-        && $this->sessionHandler->write('user', true, 'loggedIn');
+        && $this->sessionHandler->write('user', 1, 'loggedIn');
     }
 
     public function logOut(): bool {

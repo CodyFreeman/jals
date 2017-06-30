@@ -117,7 +117,7 @@ class UserRepo implements UserRepoInterface {
         $statement->execute();
         $id = $statement->fetch();
 
-        return $id ? $id : null;
+        return $id['id'] ?? null;
     }
 
 }

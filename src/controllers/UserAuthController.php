@@ -57,8 +57,7 @@ class UserAuthController {
         // SETTING NEEDED VARIABLES FROM PARAMETERS
         $email = $params['email'];
         $password = $params['password'];
-
-        $userId = $this->userSessionService->getUserId();
+        $userId = $this->userRepo->getUserId($email);
 
         if (!is_int($userId)) {
             return $this->response->withStatus(400); //TODO: Reason phrase?
@@ -73,11 +72,8 @@ class UserAuthController {
             return $this->response->withStatus(400); //TODO: Reason phrase?
         }
 
-        // GETS USER ID
-        $id = $this->userRepo->getUserId($email);
-
         // CHECKS ID AND SETS SESSION COOKIE
-        if(!isset($id['id']) || $this->userSessionService->logIn($id['id'])){
+        if(!$this->userSessionService->logIn($userId)){
             return $this->response->withStatus(400); //TODO: Reason phrase?
         }
 
