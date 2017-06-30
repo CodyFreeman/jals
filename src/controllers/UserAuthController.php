@@ -48,7 +48,8 @@ class UserAuthController {
      */
     public function logIn() {
         $params = $this->request->getParsedBody();
-        // CHECKS IF NEEDED QUERY PARAMETERS ARE SET
+
+        // CHECKS IF NEEDED PARAMETERS ARE SET
         if (!isset($params['email'], $params['password'])) {
             return $this->response->withStatus(400); //TODO: Reason phrase?
         }
@@ -57,12 +58,18 @@ class UserAuthController {
         $email = $params['email'];
         $password = $params['password'];
 
+        $userId = $this->userSessionService->getUserId();
+
+        if (!is_int($userId)) {
+            return $this->response->withStatus(400); //TODO: Reason phrase?
+        }
+
         // CHECKS EMAIL FORMAT
         if (!$this->inputValidationService->validateEmail($email)) {
             return $this->response->withStatus(400); //TODO: Reason phrase?
         }
         // VALIDATES PASSWORD IS CORRECT
-        if (!password_verify($password, $this->userRepo->getPasswordHash($email))) {
+        if (!password_verify($password, $this->userRepo->getPasswordHash($userId))) {
             return $this->response->withStatus(400); //TODO: Reason phrase?
         }
 
@@ -70,7 +77,7 @@ class UserAuthController {
         $id = $this->userRepo->getUserId($email);
 
         // CHECKS ID AND SETS SESSION COOKIE
-        if(!$id || $this->userSessionService->logIn($id['id'])){
+        if(!isset($id['id']) || $this->userSessionService->logIn($id['id'])){
             return $this->response->withStatus(400); //TODO: Reason phrase?
         }
 

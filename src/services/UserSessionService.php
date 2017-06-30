@@ -8,7 +8,7 @@ use freeman\jals\interfaces\SessionHandlerInterface;
 
 class UserSessionService implements UserSessionServiceInterface {
 
-    private $sessionHandler;
+    protected $sessionHandler;
 
     public function __construct(SessionHandlerInterface $sessionHandler) {
         $this->sessionHandler = $sessionHandler;
@@ -25,5 +25,13 @@ class UserSessionService implements UserSessionServiceInterface {
 
     public function isLoggedIn(): bool {
         return $this->sessionHandler->read('user', 'loggedIn') === true;
+    }
+
+    public function getUserCookie(): array {
+        return $this->sessionHandler->read('user') ?? [];
+    }
+
+    public function getUserId() {
+        return $this->sessionHandler->read('user', 'id');
     }
 }

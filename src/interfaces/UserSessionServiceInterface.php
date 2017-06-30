@@ -12,4 +12,8 @@ interface UserSessionServiceInterface {
     public function logOut(): bool;
 
     public function isLoggedIn(): bool;
+
+    public function getUserCookie(): array;
+
+    public function getUserId();
 }
