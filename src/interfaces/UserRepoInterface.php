@@ -8,10 +8,6 @@ interface UserRepoInterface {
 
     public function userExists(string $email):bool;
 
-    public function logIn(int $userId, string $password);
-
-    public function logOut(int $userId);
-
     public function createUser(string $email, string $password): bool;
 
     public function changeEmail(int $userId, string $newEmail): bool;

@@ -31,14 +31,6 @@ class UserRepo implements UserRepoInterface {
         return $this->userExists($email);
     }
 
-    public function logIn(int $userId, string $password) {
-
-    }
-
-    public function logOut(int $userId) {
-
-    }
-
     /**
      * Checks if user exists in database based on user's email
      *
