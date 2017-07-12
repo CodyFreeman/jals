@@ -13,7 +13,6 @@
   ],
   "require": {
     "php": ">=7.1",
-    "monolog/monolog": "^1.22",
     "php-di/php-di": "^5.4",
     "nikic/fast-route": "^1.2",
     "zendframework/zend-diactoros": "^1.4"
