@@ -14,6 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
+use freeman\jals\responseBodyTemplate\ResponseStatus;
 use freeman\jals\controllers\UserManipulationController;
 use freeman\jals\controllers\UserAuthController;
 use freeman\jals\inputValidation\EmailValidator;
@@ -89,6 +90,8 @@ return [
 
     SessionHandler::class => DI\object(SessionHandler::class),
 
-    UserSessionService::class => DI\object(UserSessionService::class)
+    UserSessionService::class => DI\object(UserSessionService::class),
+
+    ResponseStatus::class => DI\object(ResponseStatus::class)
 
 ];

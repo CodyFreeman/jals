@@ -6,6 +6,7 @@ namespace freeman\jals\controllers;
 use freeman\jals\interfaces\UserRepoInterface;
 use freeman\jals\interfaces\InputValidationServiceInterface;
 use freeman\jals\interfaces\UserSessionServiceInterface;
+use freeman\jals\responseBodyTemplate\ResponseStatus;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -15,6 +16,9 @@ class UserManipulationController {
 
     /** @var ResponseInterface $response */
     protected $response;
+
+    /** @var  ResponseStatus $responseStatus */
+    protected $responseStatus;
 
     /** @var  InputValidationServiceInterface */
     protected $inputValidationService;
@@ -29,6 +33,7 @@ class UserManipulationController {
     public function __construct(
         ServerRequestInterface $request,
         ResponseInterface $response,
+        ResponseStatus $responseStatus,
         InputValidationServiceInterface $inputValidationService,
         UserSessionServiceInterface $userSessionService,
         UserRepoInterface $userRepo
@@ -36,6 +41,7 @@ class UserManipulationController {
     ) {
         $this->request = $request;
         $this->response = $response;
+        $this->responseStatus = $responseStatus;
         $this->inputValidationService = $inputValidationService;
         $this->userSessionService = $userSessionService;
         $this->userRepo = $userRepo;
@@ -50,7 +56,9 @@ class UserManipulationController {
 
         // CHECKS IF NEEDED PARAMETERS ARE SET
         if (!isset($params['email'], $params['password'])) {
-            return $this->response->withStatus(400); //TODO: Reason phrase?
+            $this->responseStatus->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->responseStatus));
+            return $this->response->withStatus(400);
         }
 
         $email = $params['email'];
@@ -58,21 +66,28 @@ class UserManipulationController {
 
         // CHECKS EMAIL AND PASSWORD CONFORMS TO RULES
         if (!$this->inputValidationService->validateEmail($email) || !$this->inputValidationService->validatePasswordRules($password)) {
-            return $this->response->withStatus(400); //TODO: reason phrase?
+            $this->responseStatus->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->responseStatus));
+            return $this->response->withStatus(400);
         }
 
         // CHECKS IF USER ALREADY EXISTS
         if ($this->userRepo->userExists($email)){
-            return $this->response->withStatus(400); //TODO: reason phrase?
+            $this->responseStatus->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->responseStatus));
+            return $this->response->withStatus(400);
         }
 
         // HASHES PASSWORD AND CREATES USER
         $password = password_hash($password, PASSWORD_DEFAULT);
 
         if (!$this->userRepo->createUser($email, $password)) {
-            return $this->response->withStatus(400); //TODO: reason phrase?
+            $this->responseStatus->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->responseStatus));
+            return $this->response->withStatus(400);
         }
 
+        $this->response->getBody()->write(json_encode($this->responseStatus));
         return $this->response->withStatus(201);
     }
 
@@ -87,7 +102,9 @@ class UserManipulationController {
 
         // CHECKS IF NEEDED PARAMETERS ARE SET
         if (!isset($params['newEmail'], $params['password'])) {
-            return $this->response->withStatus(400); //TODO: Reason phrase?
+            $this->responseStatus->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->responseStatus));
+            return $this->response->withStatus(400);
         }
 
         // SETTING NEEDED VARIABLES FROM PARAMETERS
@@ -96,25 +113,34 @@ class UserManipulationController {
         $userId = $this->userSessionService->getUserId();
 
         if (!is_int($userId)) {
-            return $this->response->withStatus(400); //TODO: Reason phrase?
+            $this->responseStatus->addError('Unable to read cookie');
+            $this->response->getBody()->write(json_encode($this->responseStatus));
+            return $this->response->withStatus(400);
         }
 
         // CHECKS EMAIL FORMAT
         if (!$this->inputValidationService->validateEmail($newEmail)) {
-            return $this->response->withStatus(400); //TODO: Reason phrase?
+            $this->responseStatus->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->responseStatus));
+            return $this->response->withStatus(400);
         }
 
         // VALIDATES PASSWORD IS CORRECT
         if (!password_verify($password, $this->userRepo->getPasswordHash($userId))) {
-            return $this->response->withStatus(400); //TODO: Reason phrase? Maybe use fobidden?
+            $this->responseStatus->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->responseStatus));
+            return $this->response->withStatus(400);
         }
 
         // CHANGES EMAIL
         if (!$this->userRepo->changeEmail($userId, $newEmail)) {
-            return $this->response->withStatus(400); //TODO: Reason phrase? Maybe use fobidden?
+            $this->responseStatus->addError('Unable to change email');
+            $this->response->getBody()->write(json_encode($this->responseStatus));
+            return $this->response->withStatus(400);
         }
 
-        return $this->response->withStatus(200); //TODO: Reason phrase?
+        $this->response->getBody()->write(json_encode($this->responseStatus));
+        return $this->response->withStatus(200);
     }
 
     /**
@@ -123,11 +149,14 @@ class UserManipulationController {
      * @return ResponseInterface
      */
     public function changePassword(): ResponseInterface {
-        //TODO: ALL THIS COULD BE FUNCTIONS! I'M FEELING WET!
+
         $params = $this->request->getParsedBody();
 
+        // CHECKS IF NEEDED PARAMETERS ARE SET
         if (!isset($params['email'], $params['newPassword'], $params['password'])) {
-            return $this->response->withStatus(400); //TODO: Reason phrase?
+            $this->responseStatus->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->responseStatus));
+            return $this->response->withStatus(400);
         }
 
         // SETS NEEDED VARIABLES FROM PARAMETERS
@@ -136,26 +165,35 @@ class UserManipulationController {
         $userId = $this->userSessionService->getUserId();
 
         if (!is_int($userId)) {
-            return $this->response->withStatus(400); //TODO: Reason phrase?
+            $this->responseStatus->addError('Unable to read cookie');
+            $this->response->getBody()->write(json_encode($this->responseStatus));
+            return $this->response->withStatus(400);
         }
 
         // CHECKS NEW PASSWORD FORMAT
         if (!$this->inputValidationService->validatePasswordRules($newPassword)) {
-            return $this->response->withStatus(400); //TODO: Reason phrase?
+            $this->responseStatus->addError('Invalid password format');
+            $this->response->getBody()->write(json_encode($this->responseStatus));
+            return $this->response->withStatus(400);
         }
 
         // VALIDATES PASSWORD IS CORRECT
         if (!password_verify($password, $this->userRepo->getPasswordHash($userId))) {
-            return $this->response->withStatus(400); //TODO: Reason phrase? Maybe use fobidden?
+            $this->responseStatus->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->responseStatus));
+            return $this->response->withStatus(400);
         }
 
         // CHANGES PASSWORD
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
         if (!$this->userRepo->changePassword($userId, $hash)) {
-            return $this->response->withStatus(400); //TODO: Reason phrase? Maybe use fobidden?
+            $this->responseStatus->addError('Unable to change password');
+            $this->response->getBody()->write(json_encode($this->responseStatus));
+            return $this->response->withStatus(400);
         }
 
-        return $this->response->withStatus(200); //TODO: Reason phrase?
+        $this->response->getBody()->write(json_encode($this->responseStatus));
+        return $this->response->withStatus(200);
     }
 }
