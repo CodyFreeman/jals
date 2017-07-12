@@ -16,7 +16,7 @@ class UserSessionService implements UserSessionServiceInterface {
 
     public function logIn(int $id): bool {
         return $this->sessionHandler->write('user', $id, 'userId')
-        && $this->sessionHandler->write('user', 1, 'loggedIn');
+        && $this->sessionHandler->write('user', true, 'loggedIn');
     }
 
     public function logOut(): bool {
@@ -27,7 +27,7 @@ class UserSessionService implements UserSessionServiceInterface {
         return $this->sessionHandler->read('user', 'loggedIn') === true;
     }
 
-    public function getUserCookie(): array {
+    public function getUser(): array {
         return $this->sessionHandler->read('user') ?? [];
     }
 

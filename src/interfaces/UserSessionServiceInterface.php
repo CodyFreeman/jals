@@ -13,7 +13,7 @@ interface UserSessionServiceInterface {
 
     public function isLoggedIn(): bool;
 
-    public function getUserCookie(): array;
+    public function getUser(): array;
 
     public function getUserId();
 }

@@ -5,15 +5,15 @@ namespace freeman\jals\interfaces;
 
 interface SessionHandlerInterface {
 
-    public function write(string $key, $value, string $child = null): bool;
+    public function write(string $key, $value, string $store = null): bool;
 
-    public function read(string $key, string $child = null);
+    public function read(string $key, string $store = null);
 
     public function destroy(): bool;
 
-    public function deleteValue(string $key, string $child = null): bool;
+    public function deleteKey(string $key, string $store = null): bool;
 
-    public function fieldExists(string $key, string $child = null): bool;
+    public function fieldExists(string $key, string $store = null): bool;
 
     public function sessionExists(): bool;
 
