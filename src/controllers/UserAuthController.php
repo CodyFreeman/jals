@@ -113,7 +113,7 @@ class UserAuthController {
      * @return ResponseInterface
      */
     public function logOut() {
-        $this->response->getBody()->write($this->apiResponseBody);
+        $this->response->getBody()->write(json_encode($this->apiResponseBody));
         return $this->userSessionService->logOut() ? $this->response->withStatus(200) : $this->response->withStatus(400); //TODO: Reason phrase?
     }
 
