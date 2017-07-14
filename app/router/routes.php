@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use freeman\jals\controllers\UserManipulationController;
 use freeman\jals\controllers\UserAuthController;
+use freeman\jals\controllers\TokenController;
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $routeCollector){
 
@@ -16,4 +17,5 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $rou
 
     $routeCollector->addRoute('POST', '/users/logout', [UserAuthController::class, 'logOut']);
 
+    $routeCollector->addRoute('GET', '/gettoken', [TokenController::class, 'getToken']);
 });

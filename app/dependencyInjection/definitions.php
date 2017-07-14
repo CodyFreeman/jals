@@ -14,7 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
-use freeman\jals\responseBodyTemplate\ResponseStatus;
+use freeman\jals\ApiResponseBody\ApiResponseBody;
 use freeman\jals\controllers\UserManipulationController;
 use freeman\jals\controllers\UserAuthController;
 use freeman\jals\inputValidation\EmailValidator;
@@ -23,7 +23,9 @@ use freeman\jals\inputValidation\PasswordValidator;
 use freeman\jals\sessionHandler\SessionHandler;
 use freeman\jals\services\InputValidationService;
 use freeman\jals\services\UserSessionService;
-
+use freeman\jals\controllers\TokenController;
+use freeman\jals\services\TokenHandlerService;
+use freeman\jals\interfaces\TokenHandlerServiceInterface;
 
 return [
 
@@ -41,9 +43,13 @@ return [
 
     ResponseInterface::class => \DI\get(Response::class),
 
+    TokenHandlerServiceInterface::class => \DI\get(TokenHandlerService::class),
+
     InputValidationServiceInterface::class => \DI\get(InputValidationService::class),
 
     UserSessionServiceInterface::class => \DI\get(UserSessionService::class),
+
+
 
     SessionHandlerInterface::class => \DI\get(SessionHandler::class),
 
@@ -86,12 +92,16 @@ return [
 
     UserAuthController::class => DI\object(UserAuthController::class),
 
+    TokenController::class => DI\object(TokenController::class),
+
     InputValidationService::class => DI\object(InputValidationService::class),
 
     SessionHandler::class => DI\object(SessionHandler::class),
 
+    TokenHandlerService::class => DI\object(TokenHandlerService::class),
+
     UserSessionService::class => DI\object(UserSessionService::class),
 
-    ResponseStatus::class => DI\object(ResponseStatus::class)
+    ApiResponseBody::class => DI\object(ApiResponseBody::class)
 
 ];
