@@ -22,9 +22,11 @@ class SessionHandler implements SessionHandlerInterface {
 
         if (isset($store, $_SESSION[$key][$store])) {
             $_SESSION[$key][$store] = $value;
+
             return $this->fieldExists($key, $store);
         } else {
             $_SESSION[$key] = $value;
+
             return $this->fieldExists($key);
         }
     }

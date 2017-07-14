@@ -17,6 +17,7 @@ class ApiResponseBody implements JsonSerializable {
     protected $data = [];
 
     public function jsonSerialize() {
+
         return [
             "status" => [
                 "hasError" => $this->hasError,

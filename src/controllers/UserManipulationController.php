@@ -6,7 +6,7 @@ namespace freeman\jals\controllers;
 use freeman\jals\interfaces\UserRepoInterface;
 use freeman\jals\interfaces\InputValidationServiceInterface;
 use freeman\jals\interfaces\UserSessionServiceInterface;
-use freeman\jals\responseBodyTemplate\ResponseStatus;
+use freeman\jals\ApiResponseBody\ApiResponseBody;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -17,8 +17,8 @@ class UserManipulationController {
     /** @var ResponseInterface $response */
     protected $response;
 
-    /** @var  ResponseStatus $responseStatus */
-    protected $responseStatus;
+    /** @var  ApiResponseBody $apiResponseBody */
+    protected $apiResponseBody;
 
     /** @var  InputValidationServiceInterface */
     protected $inputValidationService;
@@ -33,7 +33,7 @@ class UserManipulationController {
     public function __construct(
         ServerRequestInterface $request,
         ResponseInterface $response,
-        ResponseStatus $responseStatus,
+        ApiResponseBody $apiResponseBody,
         InputValidationServiceInterface $inputValidationService,
         UserSessionServiceInterface $userSessionService,
         UserRepoInterface $userRepo
@@ -41,7 +41,7 @@ class UserManipulationController {
     ) {
         $this->request = $request;
         $this->response = $response;
-        $this->responseStatus = $responseStatus;
+        $this->apiResponseBody = $apiResponseBody;
         $this->inputValidationService = $inputValidationService;
         $this->userSessionService = $userSessionService;
         $this->userRepo = $userRepo;
@@ -56,8 +56,8 @@ class UserManipulationController {
 
         // CHECKS IF NEEDED PARAMETERS ARE SET
         if (!isset($params['email'], $params['password'])) {
-            $this->responseStatus->addError('Invalid parameters');
-            $this->response->getBody()->write(json_encode($this->responseStatus));
+            $this->apiResponseBody->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
 
@@ -66,15 +66,15 @@ class UserManipulationController {
 
         // CHECKS EMAIL AND PASSWORD CONFORMS TO RULES
         if (!$this->inputValidationService->validateEmail($email) || !$this->inputValidationService->validatePasswordRules($password)) {
-            $this->responseStatus->addError('Invalid parameters');
-            $this->response->getBody()->write(json_encode($this->responseStatus));
+            $this->apiResponseBody->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
 
         // CHECKS IF USER ALREADY EXISTS
         if ($this->userRepo->userExists($email)){
-            $this->responseStatus->addError('Invalid parameters');
-            $this->response->getBody()->write(json_encode($this->responseStatus));
+            $this->apiResponseBody->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
 
@@ -82,12 +82,12 @@ class UserManipulationController {
         $password = password_hash($password, PASSWORD_DEFAULT);
 
         if (!$this->userRepo->createUser($email, $password)) {
-            $this->responseStatus->addError('Invalid parameters');
-            $this->response->getBody()->write(json_encode($this->responseStatus));
+            $this->apiResponseBody->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
 
-        $this->response->getBody()->write(json_encode($this->responseStatus));
+        $this->response->getBody()->write(json_encode($this->apiResponseBody));
         return $this->response->withStatus(201);
     }
 
@@ -97,13 +97,13 @@ class UserManipulationController {
      * @return ResponseInterface
      */
     public function changeEmail(): ResponseInterface {
-        //TODO: ALL THIS COULD BE FUNCTIONS! I'M FEELING WET!
+
         $params = $this->request->getParsedBody();
 
         // CHECKS IF NEEDED PARAMETERS ARE SET
         if (!isset($params['newEmail'], $params['password'])) {
-            $this->responseStatus->addError('Invalid parameters');
-            $this->response->getBody()->write(json_encode($this->responseStatus));
+            $this->apiResponseBody->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
 
@@ -113,33 +113,33 @@ class UserManipulationController {
         $userId = $this->userSessionService->getUserId();
 
         if (!is_int($userId)) {
-            $this->responseStatus->addError('Unable to read cookie');
-            $this->response->getBody()->write(json_encode($this->responseStatus));
+            $this->apiResponseBody->addError('Unable to read cookie');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
 
         // CHECKS EMAIL FORMAT
         if (!$this->inputValidationService->validateEmail($newEmail)) {
-            $this->responseStatus->addError('Invalid parameters');
-            $this->response->getBody()->write(json_encode($this->responseStatus));
+            $this->apiResponseBody->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
 
         // VALIDATES PASSWORD IS CORRECT
         if (!password_verify($password, $this->userRepo->getPasswordHash($userId))) {
-            $this->responseStatus->addError('Invalid parameters');
-            $this->response->getBody()->write(json_encode($this->responseStatus));
+            $this->apiResponseBody->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
 
         // CHANGES EMAIL
         if (!$this->userRepo->changeEmail($userId, $newEmail)) {
-            $this->responseStatus->addError('Unable to change email');
-            $this->response->getBody()->write(json_encode($this->responseStatus));
+            $this->apiResponseBody->addError('Unable to change email');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
 
-        $this->response->getBody()->write(json_encode($this->responseStatus));
+        $this->response->getBody()->write(json_encode($this->apiResponseBody));
         return $this->response->withStatus(200);
     }
 
@@ -154,8 +154,10 @@ class UserManipulationController {
 
         // CHECKS IF NEEDED PARAMETERS ARE SET
         if (!isset($params['email'], $params['newPassword'], $params['password'])) {
-            $this->responseStatus->addError('Invalid parameters');
-            $this->response->getBody()->write(json_encode($this->responseStatus));
+
+            $this->apiResponseBody->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
+
             return $this->response->withStatus(400);
         }
 
@@ -165,22 +167,28 @@ class UserManipulationController {
         $userId = $this->userSessionService->getUserId();
 
         if (!is_int($userId)) {
-            $this->responseStatus->addError('Unable to read cookie');
-            $this->response->getBody()->write(json_encode($this->responseStatus));
+
+            $this->apiResponseBody->addError('Unable to read cookie');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
+
             return $this->response->withStatus(400);
         }
 
         // CHECKS NEW PASSWORD FORMAT
         if (!$this->inputValidationService->validatePasswordRules($newPassword)) {
-            $this->responseStatus->addError('Invalid password format');
-            $this->response->getBody()->write(json_encode($this->responseStatus));
+
+            $this->apiResponseBody->addError('Invalid password format');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
+
             return $this->response->withStatus(400);
         }
 
         // VALIDATES PASSWORD IS CORRECT
         if (!password_verify($password, $this->userRepo->getPasswordHash($userId))) {
-            $this->responseStatus->addError('Invalid parameters');
-            $this->response->getBody()->write(json_encode($this->responseStatus));
+
+            $this->apiResponseBody->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
+
             return $this->response->withStatus(400);
         }
 
@@ -188,12 +196,14 @@ class UserManipulationController {
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
         if (!$this->userRepo->changePassword($userId, $hash)) {
-            $this->responseStatus->addError('Unable to change password');
-            $this->response->getBody()->write(json_encode($this->responseStatus));
+
+            $this->apiResponseBody->addError('Unable to change password');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
+
             return $this->response->withStatus(400);
         }
 
-        $this->response->getBody()->write(json_encode($this->responseStatus));
+        $this->response->getBody()->write(json_encode($this->apiResponseBody));
         return $this->response->withStatus(200);
     }
 }

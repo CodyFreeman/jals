@@ -57,7 +57,6 @@ class PasswordRules implements PasswordRulesInterface {
         string $validPassUpper,
         string $validPassLower
     ): void {
-        //TODO: Write better error messages
         if(min($reqPassSymbols, $reqPassNumbers, $reqPassUpper, $reqPassLower) < 0){
             throw new Exception('Error in supplied password rules');
         }
