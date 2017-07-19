@@ -19,4 +19,6 @@ interface SessionHandlerInterface {
 
     public function insureStarted(): void;
 
+    public function regenSession(): void;
+
 }

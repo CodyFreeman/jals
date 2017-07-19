@@ -122,4 +122,9 @@ class SessionHandler implements SessionHandlerInterface {
             session_start();
         }
     }
+
+    public function regenSession(): void {
+        //TODO: Try to test Yasuo Ohgaki's idea of this opening up to session hijacking. https://why-cant-we-have-nice-things.mwl.be/requests/precise-session-management
+        session_regenerate_id(true);
+    }
 }
