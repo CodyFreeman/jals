@@ -21,6 +21,7 @@ class TokenHandlerService implements TokenHandlerServiceInterface {
      * @return string Generated token
      */
     public function setToken(): string {
+
         $token = bin2hex(random_bytes(16));
         $this->sessionHandler->write('token', $token);
         $this->sessionHandler->write('tokenTimestamp', time());
@@ -35,6 +36,7 @@ class TokenHandlerService implements TokenHandlerServiceInterface {
      * @return bool True if valid, false if invalid
      */
     public function validateToken(string $token): bool{
+
         $sessionToken = $this->sessionHandler->read('token');
 
         if (!isset($sessionToken) || $sessionToken !== $token || $sessionToken + 300 < time()) { // TODO: MOVE TIME VALID TO CONFIG

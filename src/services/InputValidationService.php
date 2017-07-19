@@ -16,6 +16,7 @@ class InputValidationService implements InputValidationServiceInterface {
     protected $passwordValidator;
 
     public function __construct(EmailValidatorInterface $emailValidator, PasswordValidatorInterface $passwordValidator) {
+
         $this->emailValidator = $emailValidator;
         $this->passwordValidator = $passwordValidator;
     }

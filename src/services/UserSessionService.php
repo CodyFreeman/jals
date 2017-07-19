@@ -26,10 +26,12 @@ class UserSessionService implements UserSessionServiceInterface {
     }
 
     public function isLoggedIn(): bool {
+
         if($this->sessionHandler->read('user', 'loggedIn') !== true){
             return false;
         }
         $this->sessionHandler->regenSession();
+
         return true;
     }
 

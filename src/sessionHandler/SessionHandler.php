@@ -109,7 +109,6 @@ class SessionHandler implements SessionHandlerInterface {
      * @return bool False if session exists, true otherwise
      */
     public function sessionExists(): bool {
-
         return !empty(session_id());
     }
 

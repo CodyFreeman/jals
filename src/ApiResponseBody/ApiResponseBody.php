@@ -45,7 +45,6 @@ class ApiResponseBody implements JsonSerializable {
      * @param bool $hasError
      */
     public function setHasError(bool $hasError): void {
-
         $this->hasError = $hasError;
     }
 
@@ -56,7 +55,6 @@ class ApiResponseBody implements JsonSerializable {
      * @param $value
      */
     public function addData(string $key, $value): void {
-
         $this->data[$key] = $value;
     }
 }

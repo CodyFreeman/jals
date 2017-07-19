@@ -15,6 +15,7 @@ class EmailValidator implements EmailValidatorInterface {
      * @return bool True the $email has the format of an email, otherwise false
      */
     public function validateEmailFormat(string $email): bool {
+
         $sanitizedEmail = filter_var($email, FILTER_SANITIZE_EMAIL);
         if ($email !== $sanitizedEmail || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return false;
