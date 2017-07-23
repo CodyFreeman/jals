@@ -110,13 +110,6 @@ class UserManipulationController {
         // SETTING NEEDED VARIABLES FROM PARAMETERS
         $newEmail = $params['newEmail'];
         $password = $params['password'];
-        $userId = $this->userSessionService->getUserId();
-
-        if (!is_int($userId)) {
-            $this->apiResponseBody->addError('Unable to read cookie');
-            $this->response->getBody()->write(json_encode($this->apiResponseBody));
-            return $this->response->withStatus(400);
-        }
 
         // CHECKS EMAIL FORMAT
         if (!$this->inputValidationService->validateEmail($newEmail)) {
@@ -125,6 +118,14 @@ class UserManipulationController {
             return $this->response->withStatus(400);
         }
 
+        // GETS USER ID
+        $userId = $this->userSessionService->getUserId();
+
+        if (!is_int($userId)) {
+            $this->apiResponseBody->addError('Unable to read cookie');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
+            return $this->response->withStatus(400);
+        }
         // VALIDATES PASSWORD IS CORRECT
         if (!password_verify($password, $this->userRepo->getPasswordHash($userId))) {
             $this->apiResponseBody->addError('Invalid parameters');
@@ -164,20 +165,22 @@ class UserManipulationController {
         // SETS NEEDED VARIABLES FROM PARAMETERS
         $password = $params['password'];
         $newPassword = $params['newPassword'];
-        $userId = $this->userSessionService->getUserId();
 
-        if (!is_int($userId)) {
-
-            $this->apiResponseBody->addError('Unable to read cookie');
-            $this->response->getBody()->write(json_encode($this->apiResponseBody));
-
-            return $this->response->withStatus(400);
-        }
 
         // CHECKS NEW PASSWORD FORMAT
         if (!$this->inputValidationService->validatePasswordRules($newPassword)) {
 
             $this->apiResponseBody->addError('Invalid password format');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
+
+            return $this->response->withStatus(400);
+        }
+
+        $userId = $this->userSessionService->getUserId();
+
+        if (!is_int($userId)) {
+
+            $this->apiResponseBody->addError('Unable to read cookie');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
             return $this->response->withStatus(400);

@@ -67,6 +67,17 @@ class UserAuthController {
         // SETTING NEEDED VARIABLES FROM PARAMETERS
         $email = $params['email'];
         $password = $params['password'];
+
+        // CHECKS EMAIL FORMAT
+        if (!$this->inputValidationService->validateEmail($email)) {
+
+            $this->apiResponseBody->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
+
+            return $this->response->withStatus(400);
+        }
+
+        // SETS AND CHECKS USERID
         $userId = $this->userRepo->getUserId($email);
 
         if (!is_int($userId)) {
@@ -77,14 +88,6 @@ class UserAuthController {
             return $this->response->withStatus(400);
         }
 
-        // CHECKS EMAIL FORMAT
-        if (!$this->inputValidationService->validateEmail($email)) {
-
-            $this->apiResponseBody->addError('Invalid parameters');
-            $this->response->getBody()->write(json_encode($this->apiResponseBody));
-
-            return $this->response->withStatus(400);
-        }
         // VALIDATES PASSWORD IS CORRECT
         if (!password_verify($password, $this->userRepo->getPasswordHash($userId))) {
 
@@ -97,7 +100,7 @@ class UserAuthController {
         // CHECKS ID AND SETS SESSION COOKIE
         if(!$this->userSessionService->logIn($userId)){
 
-            $this->apiResponseBody->addError('Unable to set cookie');
+            $this->apiResponseBody->addError('Login failed');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
             return $this->response->withStatus(400);
