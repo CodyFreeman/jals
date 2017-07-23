@@ -14,15 +14,15 @@ class UserSessionService implements UserSessionServiceInterface {
         $this->sessionHandler = $sessionHandler;
     }
 
-    public function logIn(int $id): bool {
+    public function logIn(int $id): void {
         $this->sessionHandler->regenSession();
-        return $this->sessionHandler->write('user', $id, 'userId')
-        && $this->sessionHandler->write('user', true, 'loggedIn');
+        $this->sessionHandler->write('user', $id, 'userId');
+        $this->sessionHandler->write('user', true, 'loggedIn');
     }
 
-    public function logOut(): bool {
+    public function logOut(): void {
         $this->sessionHandler->regenSession();
-        return $this->sessionHandler->destroy(); //TODO: Decide between unset and destroy
+        $this->sessionHandler->deleteKey('user');
     }
 
     public function isLoggedIn(): bool {

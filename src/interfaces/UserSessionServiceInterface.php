@@ -7,9 +7,9 @@ namespace freeman\jals\interfaces;
 
 interface UserSessionServiceInterface {
 
-    public function logIn(int $id): bool;
+    public function logIn(int $id): void;
 
-    public function logOut(): bool;
+    public function logOut(): void;
 
     public function isLoggedIn(): bool;
 

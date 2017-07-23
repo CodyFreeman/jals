@@ -17,17 +17,13 @@ class SessionHandler implements SessionHandlerInterface {
      * @param string|null $store
      * @return bool True on success
      */
-    public function write(string $key, $value, string $store = null): bool {
+    public function write(string $key, $value, string $store = null): void {
         $this->insureStarted();
 
         if (isset($store, $_SESSION[$key][$store])) {
             $_SESSION[$key][$store] = $value;
-
-            return $this->fieldExists($key, $store);
         } else {
             $_SESSION[$key] = $value;
-
-            return $this->fieldExists($key);
         }
     }
 
@@ -60,12 +56,10 @@ class SessionHandler implements SessionHandlerInterface {
      *
      * @return bool True if deleted, false otherwise
      */
-    public function destroy(): bool {
+    public function destroy(): void {
 
         session_destroy();
         unset($_SESSION);
-
-        return !$this->sessionExists();
     }
 
     /**
@@ -75,16 +69,13 @@ class SessionHandler implements SessionHandlerInterface {
      * @param string|null $store
      * @return bool True if value does not exist, otherwise false
      */
-    public function deleteKey(string $key, string $store = null): bool{
+    public function deleteKey(string $key, string $store = null): void{
 
         if(isset($store)){
             unset($_SESSION[$key][$store]);
-            return $this->fieldExists($key, $store);
         }
 
         unset($_SESSION[$key]);
-
-        return $this->fieldExists($key, $store);
     }
 
     /**
@@ -94,7 +85,7 @@ class SessionHandler implements SessionHandlerInterface {
      * @param string|null $store
      * @return bool True if value is found, false otherwise
      */
-    public function fieldExists(string $key, string $store = null):bool {
+    public function fieldExists(string $key, string $store = null): bool {
 
         if(isset($store)){
             return !empty($this->read($key, $store));
