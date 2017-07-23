@@ -98,13 +98,7 @@ class UserAuthController {
         }
 
         // CHECKS ID AND SETS SESSION COOKIE
-        if(!$this->userSessionService->logIn($userId)){
-
-            $this->apiResponseBody->addError('Login failed');
-            $this->response->getBody()->write(json_encode($this->apiResponseBody));
-
-            return $this->response->withStatus(400);
-        }
+        $this->userSessionService->logIn($userId);
 
         $this->response->getBody()->write(json_encode($this->apiResponseBody));
         return $this->response->withStatus(200);
@@ -118,8 +112,8 @@ class UserAuthController {
     public function logOut() {
 
         $this->response->getBody()->write(json_encode($this->apiResponseBody));
-
-        return $this->userSessionService->logOut() ? $this->response->withStatus(200) : $this->response->withStatus(400); //TODO: Reason phrase?
+        $this->userSessionService->logOut();
+        $this->response->withStatus(200);
     }
 
 }
