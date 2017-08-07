@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-
+session_start();
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 // CREATING CONTAINER
@@ -18,18 +18,27 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'router' . DIRECTORY_SEPARATOR . 'r
 $routeInfo = $dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());
 
 // ROUTING TO DISPATCHER
-switch ($routeInfo[0]){
+switch ($routeInfo[0]) {
     case \FastRoute\Dispatcher::NOT_FOUND:
-        //TODO: 404 error
+            // TODO: NOT FOUND ERROR HANDLING
         break;
+
     case \FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-        //TODO: 405 error
-        //NTS: 405 errors require responding with allowed methods which is stored $routeInfo[1]
+        $response = $container->get(\Psr\Http\Message\ResponseInterface::class);
+        if ($request->getMethod() == 'OPTIONS') {
+            $response = $response->withHeader('access-control-allow-methods', $routeInfo[1]); // TODO: Check if routeInfo can be array
+        } else {
+            $response = $response->withStatus(405);
+            $response = $response->withHeader('allow', $routeInfo[1]); // TODO: Check if routeInfo can be array
+        }
+        $emitter = new \Zend\Diactoros\Response\SapiEmitter();
+        $emitter->emit($response);
         break;
+
     case \FastRoute\Dispatcher::FOUND:
         $parameters = $routeInfo[2];
         $response = $container->call($routeInfo[1], $routeInfo[2]);
-        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->withHeader('Content-Type', 'application/json');
         $emitter = new \Zend\Diactoros\Response\SapiEmitter();
         $emitter->emit($response);
         break;
