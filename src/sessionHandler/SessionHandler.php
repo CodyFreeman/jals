@@ -18,9 +18,8 @@ class SessionHandler implements SessionHandlerInterface {
      * @return bool True on success
      */
     public function write(string $key, $value, string $store = null): void {
-        $this->insureStarted();
 
-        if (isset($store, $_SESSION[$key][$store])) {
+        if (isset($store)) {
             $_SESSION[$key][$store] = $value;
         } else {
             $_SESSION[$key] = $value;
@@ -58,8 +57,8 @@ class SessionHandler implements SessionHandlerInterface {
      */
     public function destroy(): void {
 
-        session_destroy();
         unset($_SESSION);
+        session_destroy();
     }
 
     /**
@@ -103,18 +102,14 @@ class SessionHandler implements SessionHandlerInterface {
         return !empty(session_id());
     }
 
-    /**
-     * Insures session is started, otherwise starts it
-     */
-    public function insureStarted(): void {
-
-        if (empty(session_id())) {
-            session_start();
-        }
-    }
-
     public function regenSession(): void {
-        //TODO: Try to test Yasuo Ohgaki's idea of this opening up to session hijacking. https://why-cant-we-have-nice-things.mwl.be/requests/precise-session-management
+
+        if($this->read('token') && $this->read('tokenTimestamp')){
+            $this->deleteKey('token');
+            $this->deleteKey('tokenTimestamp');
+        }
+        // TODO: Try to test Yasuo Ohgaki's idea of this opening up to session hijacking. https://why-cant-we-have-nice-things.mwl.be/requests/precise-session-management
         session_regenerate_id(true);
+
     }
 }
