@@ -21,8 +21,7 @@ class UserSessionService implements UserSessionServiceInterface {
     }
 
     public function logOut(): void {
-        $this->sessionHandler->regenSession();
-        $this->sessionHandler->deleteKey('user');
+        $this->sessionHandler->destroy();
     }
 
     public function isLoggedIn(): bool {
@@ -30,7 +29,6 @@ class UserSessionService implements UserSessionServiceInterface {
         if($this->sessionHandler->read('user', 'loggedIn') !== true){
             return false;
         }
-        $this->sessionHandler->regenSession();
 
         return true;
     }
@@ -40,6 +38,6 @@ class UserSessionService implements UserSessionServiceInterface {
     }
 
     public function getUserId() {
-        return $this->sessionHandler->read('user', 'id');
+        return $this->sessionHandler->read('user', 'userId');
     }
 }
