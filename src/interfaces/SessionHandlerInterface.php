@@ -17,8 +17,6 @@ interface SessionHandlerInterface {
 
     public function sessionExists(): bool;
 
-    public function insureStarted(): void;
-
     public function regenSession(): void;
 
 }
