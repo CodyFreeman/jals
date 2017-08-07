@@ -17,6 +17,7 @@ use Zend\Diactoros\Response;
 use freeman\jals\ApiResponseBody\ApiResponseBody;
 use freeman\jals\controllers\UserManipulationController;
 use freeman\jals\controllers\UserAuthController;
+use freeman\jals\controllers\PasswordRulesController;
 use freeman\jals\inputValidation\EmailValidator;
 use freeman\jals\inputValidation\PasswordRules;
 use freeman\jals\inputValidation\PasswordValidator;
@@ -49,12 +50,20 @@ return [
 
     UserSessionServiceInterface::class => \DI\get(UserSessionService::class),
 
-
-
     SessionHandlerInterface::class => \DI\get(SessionHandler::class),
 
     /* FACTORIES */
-    PDO::class => function() {
+
+    Response::class => function () {
+
+        $response = new Response();
+        $response = $response->withHeader('Access-Control-Allow-Origin', 'https://jals.space');
+        $response = $response->withHeader('X-Frame-Options', 'DENY');
+
+        return $response->withHeader('Access-Control-Allow-Credentials', 'true');
+    },
+
+    PDO::class => function () {
 
         $dbConfig = json_decode(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'databaseConfig.json'));
         $pdo = new PDO($dbConfig->dsn, $dbConfig->user, $dbConfig->password);
@@ -68,8 +77,8 @@ return [
         return \Zend\Diactoros\ServerRequestFactory::fromGlobals($_SERVER, $_GET, $_POST, $_COOKIE, $_FILES);
     },
 
-    PasswordRules::class => function () {
 
+    PasswordRules::class => function () {
         $rules = json_decode(file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'passwordRules.json'));
 
         return new PasswordRules(
@@ -93,6 +102,8 @@ return [
     UserAuthController::class => DI\object(UserAuthController::class),
 
     TokenController::class => DI\object(TokenController::class),
+
+    PasswordRulesController::class => DI\object(PasswordRulesController::class),
 
     InputValidationService::class => DI\object(InputValidationService::class),
 
