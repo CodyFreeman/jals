@@ -32,7 +32,7 @@ class PasswordValidator implements PasswordValidatorInterface {
      * @return bool True if password is at or between min and max requirements
      */
     protected function validateLengthRules(string $password):bool {
-       return strlen($password) >= $this->rules->getMinLength() && strlen($password) <= $this->rules->getMaxLength();
+       return strlen($password) >= $this->rules->getMinLength() && strlen($password) < $this->rules->getMaxLength();
     }
 
     /**
@@ -46,7 +46,9 @@ class PasswordValidator implements PasswordValidatorInterface {
             $this->validateCharacterRule($password, $this->rules->getReqSymbols(), $this->rules->getValidSymbols())
             && $this->validateCharacterRule($password, $this->rules->getReqNumbers(), $this->rules->getValidNumbers())
             && $this->validateCharacterRule($password, $this->rules->getReqUpper(), $this->rules->getValidUpper())
-            && $this->validateCharacterRule($password, $this->rules->getReqLower(), $this->rules->getValidLower());
+            && $this->validateCharacterRule($password, $this->rules->getReqLower(), $this->rules->getValidLower())
+            && $this->validateCharacterRule($password, strlen($password),
+                $this->rules->getValidLower() . $this->rules->getValidUpper() . $this->rules->getValidNumbers() . $this->rules->getValidSymbols());
     }
 
     /**
@@ -60,5 +62,4 @@ class PasswordValidator implements PasswordValidatorInterface {
     protected function validateCharacterRule(string $password, int $requirementCount, string $allowedCharacters):bool {
         return $requirementCount === 0 || (int) preg_match_all('/[' . preg_quote($allowedCharacters) . ']/', $password) >= $requirementCount;
     }
-
 }

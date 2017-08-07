@@ -1,5 +1,5 @@
 <?php
-
+//TODO: ADD containsOnlyValid
 declare(strict_types=1);
 
 namespace freeman\jals\inputValidation;
