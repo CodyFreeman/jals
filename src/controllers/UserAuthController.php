@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace freeman\jals\controllers;
 
 use freeman\jals\interfaces\InputValidationServiceInterface;
+use freeman\jals\interfaces\TokenHandlerServiceInterface;
 use freeman\jals\interfaces\UserRepoInterface;
 use freeman\jals\interfaces\UserSessionServiceInterface;
 use freeman\jals\ApiResponseBody\ApiResponseBody;
@@ -27,16 +28,21 @@ class UserAuthController {
     /** @var  UserSessionServiceInterface $userSessionService */
     protected $userSessionService;
 
+    /** @var TokenHandlerServiceInterface $tokenHandlerService */
+    protected $tokenHandlerService;
+
     /** @var UserRepoInterface $userRepo */
     protected $userRepo;
 
 
     public function __construct(
+
         ServerRequestInterface $request,
         ResponseInterface $response,
         ApiResponseBody $apiResponseBody,
         InputValidationServiceInterface $inputValidationService,
         UserSessionServiceInterface $userSessionService,
+        TokenHandlerServiceInterface $tokenHandlerService,
         UserRepoInterface $userRepo
     ) {
         $this->request = $request;
@@ -44,6 +50,7 @@ class UserAuthController {
         $this->apiResponseBody = $apiResponseBody;
         $this->inputValidationService = $inputValidationService;
         $this->userSessionService = $userSessionService;
+        $this->tokenHandlerService = $tokenHandlerService;
         $this->userRepo = $userRepo;
     }
 
@@ -52,11 +59,12 @@ class UserAuthController {
      *
      * @return ResponseInterface
      */
-    public function logIn() {
+    public function logIn(): ResponseInterface {
+
         $params = $this->request->getParsedBody();
 
         // CHECKS IF NEEDED PARAMETERS ARE SET
-        if (!isset($params['email'], $params['password'])) {
+        if (!isset($params['email'], $params['password'], $params['token'])) {
 
             $this->apiResponseBody->addError('Invalid parameters');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
@@ -67,6 +75,16 @@ class UserAuthController {
         // SETTING NEEDED VARIABLES FROM PARAMETERS
         $email = $params['email'];
         $password = $params['password'];
+        $token = $params['token'];
+
+        // CHECKS TOKEN IS VALID
+        if (!$this->tokenHandlerService->validateToken($token)) {
+
+            $this->apiResponseBody->addError('Invalid parameters');
+            $this->response->getBody()->write(json_encode($this->apiResponseBody));
+
+            return $this->response->withStatus(400);
+        }
 
         // CHECKS EMAIL FORMAT
         if (!$this->inputValidationService->validateEmail($email)) {
@@ -97,11 +115,25 @@ class UserAuthController {
             return $this->response->withStatus(400);
         }
 
-        // CHECKS ID AND SETS SESSION COOKIE
+        // SETS SESSION COOKIE
         $this->userSessionService->logIn($userId);
 
         $this->response->getBody()->write(json_encode($this->apiResponseBody));
+
         return $this->response->withStatus(200);
+    }
+
+    /**
+     * Checks if user is logged in
+     *
+     * @return ResponseInterface
+     */
+    public function isLoggedIn(): ResponseInterface {
+        $this->apiResponseBody->addData('loggedIn', $this->userSessionService->isLoggedIn());
+        $this->response->getBody()->write(json_encode($this->apiResponseBody));
+
+        return $this->response->withStatus(200);
+
     }
 
     /**
@@ -109,11 +141,13 @@ class UserAuthController {
      *
      * @return ResponseInterface
      */
-    public function logOut() {
+    public function logOut(): ResponseInterface {
+
+        $this->userSessionService->logOut();
 
         $this->response->getBody()->write(json_encode($this->apiResponseBody));
-        $this->userSessionService->logOut();
-        $this->response->withStatus(200);
+
+        return $this->response->withStatus(200);
     }
 
 }

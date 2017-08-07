@@ -39,7 +39,7 @@ class TokenController {
      *
      * @return ResponseInterface
      */
-    public function getToken() {
+    public function getToken(): ResponseInterface {
 
         $token = $this->tokenHandlerService->setToken();
         $this->apiResponseBody->addData('token', $token);
