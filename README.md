@@ -17,7 +17,7 @@ To install the dependencies of JALS, run `composer install` in the folder contai
 
 Log into your MySQL user and run `CREATE DATABASE jals;` to create the database needed.
 
-Logged in to the MySQL prompt enter the jals database with `USE jals;` and import the default database setup with `SOURCE <path>/app/config/userTable.sql;`
+Import the default table with `mysql -u <USERNAME> -p jals < <PATH>/app/config/jals.sql;`
 
 Modify your `php.ini` file to secure session cookies by ensuring these settings are set:
 ```
