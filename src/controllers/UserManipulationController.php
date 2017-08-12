@@ -64,7 +64,7 @@ class UserManipulationController {
 
         // CHECKS IF NEEDED PARAMETERS ARE SET
         if (!isset($params['email'], $params['password'], $params['token'])) {
-            $this->apiResponseBody->addError('Invalid parameters1');
+            $this->apiResponseBody->addError('Invalid parameters');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
@@ -76,7 +76,7 @@ class UserManipulationController {
         // CHECKS TOKEN IS VALID
         if(!$this->tokenHandlerService->validateToken($token)){
 
-            $this->apiResponseBody->addError('Invalid parameters');
+            $this->apiResponseBody->addError('Invalid token');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
             return $this->response->withStatus(400);
@@ -84,14 +84,14 @@ class UserManipulationController {
 
         // CHECKS EMAIL AND PASSWORD CONFORMS TO RULES
         if (!$this->inputValidationService->validateEmail($email) || !$this->inputValidationService->validatePasswordRules($password)) {
-            $this->apiResponseBody->addError('Invalid parameters');
+            $this->apiResponseBody->addError('Invalid password or email');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
 
         // CHECKS IF USER ALREADY EXISTS
         if ($this->userRepo->userExists($email)){
-            $this->apiResponseBody->addError('Invalid parameters');
+            $this->apiResponseBody->addError('User not found');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
@@ -101,7 +101,7 @@ class UserManipulationController {
 
         if (!$this->userRepo->createUser($email, $password)) {
 
-            $this->apiResponseBody->addError('Invalid parameters');
+            $this->apiResponseBody->addError('Creation failed');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
             return $this->response->withStatus(400);
@@ -143,7 +143,7 @@ class UserManipulationController {
         // CHECKS TOKEN IS VALID
         if(!$this->tokenHandlerService->validateToken($token)){
 
-            $this->apiResponseBody->addError('Invalid parameters');
+            $this->apiResponseBody->addError('Invalid token');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
             return $this->response->withStatus(400);
@@ -151,7 +151,7 @@ class UserManipulationController {
 
         // CHECKS EMAIL FORMAT
         if (!$this->inputValidationService->validateEmail($newEmail)) {
-            $this->apiResponseBody->addError('Invalid parameters');
+            $this->apiResponseBody->addError('Invalid email password combination');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
@@ -160,21 +160,21 @@ class UserManipulationController {
         $userId = $this->userSessionService->getUserId();
 
         if (!is_int($userId)) {
-            $this->apiResponseBody->addError('Unable to read cookie');
+            $this->apiResponseBody->addError('Invalid cookie');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
 
         // VALIDATES PASSWORD IS CORRECT
         if (!password_verify($password, $this->userRepo->getPasswordHash($userId))) {
-            $this->apiResponseBody->addError('Invalid parameters');
+            $this->apiResponseBody->addError('Invalid email password combination');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
 
         // CHANGES EMAIL
         if (!$this->userRepo->changeEmail($userId, $newEmail)) {
-            $this->apiResponseBody->addError('Unable to change email');
+            $this->apiResponseBody->addError('Email change failed');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
@@ -215,7 +215,7 @@ class UserManipulationController {
         // CHECKS TOKEN IS VALID
         if(!$this->tokenHandlerService->validateToken($token)){
 
-            $this->apiResponseBody->addError('Invalid parameters');
+            $this->apiResponseBody->addError('Invalid token');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
             return $this->response->withStatus(400);
@@ -224,7 +224,7 @@ class UserManipulationController {
         // CHECKS NEW PASSWORD FORMAT
         if (!$this->inputValidationService->validatePasswordRules($newPassword)) {
 
-            $this->apiResponseBody->addError('Invalid password format');
+            $this->apiResponseBody->addError('Invalid new password');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
             return $this->response->withStatus(400);
@@ -234,7 +234,7 @@ class UserManipulationController {
 
         if (!is_int($userId)) {
 
-            $this->apiResponseBody->addError('Unable to read cookie');
+            $this->apiResponseBody->addError('Invalid cookie');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
             return $this->response->withStatus(400);
@@ -243,7 +243,7 @@ class UserManipulationController {
         // VALIDATES PASSWORD IS CORRECT
         if (!password_verify($password, $this->userRepo->getPasswordHash($userId))) {
 
-            $this->apiResponseBody->addError('Invalid parameters');
+            $this->apiResponseBody->addError('Invalid email password combination');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
             return $this->response->withStatus(400);
@@ -254,7 +254,7 @@ class UserManipulationController {
 
         if (!$this->userRepo->changePassword($userId, $hash)) {
 
-            $this->apiResponseBody->addError('Unable to change password');
+            $this->apiResponseBody->addError('Password change failed');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
             return $this->response->withStatus(400);

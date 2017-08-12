@@ -80,7 +80,7 @@ class UserAuthController {
         // CHECKS TOKEN IS VALID
         if (!$this->tokenHandlerService->validateToken($token)) {
 
-            $this->apiResponseBody->addError('Invalid parameters');
+            $this->apiResponseBody->addError('Invalid token');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
             return $this->response->withStatus(400);
@@ -89,7 +89,7 @@ class UserAuthController {
         // CHECKS EMAIL FORMAT
         if (!$this->inputValidationService->validateEmail($email)) {
 
-            $this->apiResponseBody->addError('Invalid parameters');
+            $this->apiResponseBody->addError('Invalid email password combination');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
             return $this->response->withStatus(400);
@@ -100,7 +100,7 @@ class UserAuthController {
 
         if (!is_int($userId)) {
 
-            $this->apiResponseBody->addError('Invalid parameters');
+            $this->apiResponseBody->addError('User not found');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
             return $this->response->withStatus(400);
@@ -109,7 +109,7 @@ class UserAuthController {
         // VALIDATES PASSWORD IS CORRECT
         if (!password_verify($password, $this->userRepo->getPasswordHash($userId))) {
 
-            $this->apiResponseBody->addError('Invalid parameters');
+            $this->apiResponseBody->addError('Invalid email password combination');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
             return $this->response->withStatus(400);
