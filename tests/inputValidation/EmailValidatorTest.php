@@ -8,8 +8,9 @@ use freeman\jals\inputValidation\EmailValidator;
 class EmailValidatorTest extends TestCase {
 
     /* SETTING UP DATA PROVIDERS */
-    //TODO: Do i even need a data provider? Am i not just testing filter_var?
+    //TODO: Consider: do i even need a data provider? Am i not just testing filter_var?
     public function provideInvalidEmails() {
+
         return [
             ['.thisIsInvalid@example.com'],
             ['NoTopLevel@example'],
@@ -22,14 +23,15 @@ class EmailValidatorTest extends TestCase {
      * @dataProvider provideInvalidEmails
      */
     public function testValidateEmailInvalidEmail($email) {
+
         $validator = new EmailValidator();
         self::assertFalse($validator->validateEmailFormat($email));
     }
 
     public function testValidateEmailValidEmail() {
+
         $validator = new EmailValidator();
         $email = 'example@example.com';
         self::assertTrue($validator->validateEmailFormat($email));
     }
-
 }

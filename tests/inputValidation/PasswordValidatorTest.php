@@ -7,7 +7,9 @@ use PHPUnit\Framework\TestCase;
 class PasswordValidatorTest extends TestCase {
 
     public function setUp() {
+
         $rulesMock = $this->createMock(PasswordRules::class);
+
         $rulesMock->method('getReqSymbols')->willReturn(2);
         $rulesMock->method('getReqNumbers')->willReturn(2);
         $rulesMock->method('getReqUpper')->willReturn(2);
@@ -27,6 +29,7 @@ class PasswordValidatorTest extends TestCase {
     }
 
     public function provideValidPasswords() {
+
         return [
             ['AAaa11@@'],
             ['422@@_kOlaEf']
@@ -34,6 +37,7 @@ class PasswordValidatorTest extends TestCase {
     }
 
     public function provideInvalidPasswords() {
+
         return [
             [''],   //TOO SHORT
             ['aaAA@@11aaAA@@11aaAA@@11'], //TOO LONG
@@ -58,6 +62,7 @@ class PasswordValidatorTest extends TestCase {
      * @dataProvider provideInvalidPasswords
      */
     public function validatePasswordInvalidPassword(string $password) {
+
         $passwordValidator = new PasswordValidator($this->rulesMock);
         self::assertFalse($passwordValidator->validatePassword($password));
     }
