@@ -40,7 +40,7 @@ class TokenHandlerService implements TokenHandlerServiceInterface {
         $sessionToken = $this->sessionHandler->read('token');
         $timeStamp = $this->sessionHandler->read('tokenTimestamp');
 
-        if (!isset($sessionToken) || $sessionToken !== $token || $timeStamp + 300 < time()) { // TODO: MOVE TIME VALID TO CONFIG
+        if (!isset($sessionToken) || $sessionToken !== $token || $timeStamp + 900 < time()) { // TODO: MOVE TIME VALID TO CONFIG
             return false;
         }
 

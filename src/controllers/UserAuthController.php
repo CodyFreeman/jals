@@ -129,6 +129,7 @@ class UserAuthController {
      * @return ResponseInterface
      */
     public function isLoggedIn(): ResponseInterface {
+
         $this->apiResponseBody->addData('loggedIn', $this->userSessionService->isLoggedIn());
         $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
@@ -144,7 +145,6 @@ class UserAuthController {
     public function logOut(): ResponseInterface {
 
         $this->userSessionService->logOut();
-
         $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
         return $this->response->withStatus(200);
