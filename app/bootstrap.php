@@ -20,7 +20,10 @@ $routeInfo = $dispatcher->dispatch($request->getMethod(), $request->getUri()->ge
 // ROUTING TO DISPATCHER
 switch ($routeInfo[0]) {
     case \FastRoute\Dispatcher::NOT_FOUND:
-            // TODO: NOT FOUND ERROR HANDLING
+        $response = $container->get(\Psr\Http\Message\ResponseInterface::class);
+        $response = $response->withStatus(404);
+        $emitter = new \Zend\Diactoros\Response\SapiEmitter();
+        $emitter->emit($response);
         break;
 
     case \FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
