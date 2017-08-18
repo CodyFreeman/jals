@@ -91,7 +91,7 @@ class UserManipulationController {
 
         // CHECKS IF USER ALREADY EXISTS
         if ($this->userRepo->userExists($email)){
-            $this->apiResponseBody->addError('User not found');
+            $this->apiResponseBody->addError('User already exists');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
@@ -151,7 +151,7 @@ class UserManipulationController {
 
         // CHECKS EMAIL FORMAT
         if (!$this->inputValidationService->validateEmail($newEmail)) {
-            $this->apiResponseBody->addError('Invalid email password combination');
+            $this->apiResponseBody->addError('Invalid email');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
@@ -167,7 +167,7 @@ class UserManipulationController {
 
         // VALIDATES PASSWORD IS CORRECT
         if (!password_verify($password, $this->userRepo->getPasswordHash($userId))) {
-            $this->apiResponseBody->addError('Invalid email password combination');
+            $this->apiResponseBody->addError('Invalid password');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
             return $this->response->withStatus(400);
         }
@@ -243,7 +243,7 @@ class UserManipulationController {
         // VALIDATES PASSWORD IS CORRECT
         if (!password_verify($password, $this->userRepo->getPasswordHash($userId))) {
 
-            $this->apiResponseBody->addError('Invalid email password combination');
+            $this->apiResponseBody->addError('Invalid password');
             $this->response->getBody()->write(json_encode($this->apiResponseBody));
 
             return $this->response->withStatus(400);
