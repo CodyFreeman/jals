@@ -6,8 +6,6 @@ use PHPUnit\Framework\TestCase;
 use freeman\jals\inputValidation\EmailValidator;
 
 class EmailValidatorTest extends TestCase {
-    /** @var  EmailValidator */
-    public $inputValidator;
 
     /* SETTING UP DATA PROVIDERS */
     //TODO: Do i even need a data provider? Am i not just testing filter_var?
