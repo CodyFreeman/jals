@@ -2,7 +2,7 @@
 
 JALS is a RELAXED* authentication API written in PHP aiming to provide easy separation between backend API and frontend consumer of the authentication service.
 
-A demo, with a rather hacky frontend can be found at [jals.space](https://jals.space) and the API can be called at [api.jals.space](https://api.jals.space)
+A demo, with a rather hacky frontend can be found at ~~jals.space~~ and the API can be called at ~~api.jals.space~~
 
 **NB! This software is currently in an alpha state. Use at own risk.**
 
@@ -94,7 +94,7 @@ To log a user in; send a POST request to `/users/login` containing a token, emai
 #### Check if logged in - /users/isloggedin
 To check if a user is logged in; send a GET request to `/users/isloggedin`. The response contains data object containing `loggedIn` key with a boolean value.
 
-[See it live](https://api.jals.space/users/isloggedin)
+~~See it live~~
 
 #### Log out - /users/logout
 To log a user out; send a POST request to `/users/logout` Requires no body.
@@ -102,13 +102,12 @@ To log a user out; send a POST request to `/users/logout` Requires no body.
 #### Get CSRF token - /users/gettoken
 To get a CSRF token to put into forms; send a request to `/gettoken` The response contains a data object containing `token` key with a string value.
 
-[See it live](https://api.jals.space/gettoken)
+~~See it live~~
 
 #### Get password rules - /users/passwordrules
 To get the password rules; send a request to `/users/passwordrules` Requires no body. The response contains a data object containing passwordRules.
 
-[See it live](https://api.jals.space/passwordRules)
-
+~~See it live~~
 ## MODIFICATION
 JALS uses interfaces extensively to make it easy exchanging part of the application with your own classes.
 
